@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "text": {
+          "type": "text"
+        },
+        "title": {
+          "type": "title"
+        },
+        "description": {
+          "type": "description"
+        },
+        "inventory": {
+          "type": "inventory"
+        },
+        "price": {
+          "type": "price"
+        },
+        "sku": {
+          "type": "sku"
+        },
+        "collapsible-row-1": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "<p>Shipping take approximately  Expect your order to arrive in 2-4 weeks.</p>",
+            "page": ""
+          }
+        },
+        "collapsible-row-2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Dimensions",
+            "content": "<p>The dimensions are clearly listed in the product description for easy reference.</p>",
+            "page": ""
+          }
+        },
+        "collapsible-row-3": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Care Instructions",
+            "content": "<p>Care instructions are provided on the product packaging for easy reference.</p>",
+            "page": ""
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector"
+        },
+        "variant_picker": {
+          "type": "variant_picker"
+        },
+        "buy_buttons": {
+          "type": "buy_buttons"
+        },
+        "pickup_availability": {
+          "type": "pickup_availability"
+        },
+        "complementary": {
+          "type": "complementary"
+        }
+      },
+      "block_order": [
+        "text",
+        "title",
+        "description",
+        "inventory",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "pickup_availability",
+        "complementary",
+        "collapsible-row-1",
+        "collapsible-row-2",
+        "collapsible-row-3",
+        "sku"
+      ]
+    }
+  },
+  "order": ["main"]
+}

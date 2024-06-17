@@ -1,0 +1,37 @@
+{%- comment -%}
+  Renders a product price block
+
+  Accepts:
+  - block: {Object} - the block to render
+  - section: {Object} - the block to render
+  - product: {Object} - the product to render
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-price',
+        block: block,
+        section: section,
+        product: product
+        data_id: 'product-price'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign attributes = block.shopify_attributes
+%}
+
+<div
+  {{ attributes }}
+  class='font-light {{ class }}'
+  data-id='{{ data_id }}'
+>
+  {%- render 'price', product: product, use_variant: true, show_badges: true -%}
+
+  {%- render 'product-tax', block: block, product: product, section: section -%}
+
+  {%- render 'product-installments',
+    block: block,
+    product: product,
+    section: section
+  -%}
+</div>

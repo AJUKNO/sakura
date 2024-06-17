@@ -1,0 +1,49 @@
+{%- comment -%}
+  Renders a loading overlay
+
+  Usage:
+    {%- render 'loading-overlay'
+    data_id: 'cart-drawer-loading'
+      class: 'group-data-[error=false]/menu:opacity-0 group-data-[error=false]/menu:hidden group-data-[error=false]/menu:invisible'
+    -%}
+{%- endcomment -%}
+
+<div
+  data-id='{{ data_id }}'
+  class='bg-background/50 transition-all duration-300 ease-in-out flex items-center justify-center absolute inset-0 {{ class }}'
+>
+  {% comment %}
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      class='h-6 fill-stone-900 w-auto animate-[spin_1s_ease-in-out_infinite]'
+      viewBox='0 0 256 256'
+    >
+      <path d="M211.18,196.56,139.57,128l71.61-68.56a1.59,1.59,0,0,1,.13-.13A16,16,0,0,0,200,32H56A16,16,0,0,0,44.7,59.31l.12.13L116.43,128,44.82,196.56l-.12.13A16,16,0,0,0,56,224H200a16,16,0,0,0,11.32-27.31A1.59,1.59,0,0,1,211.18,196.56ZM56,48h0v0Zm144,0-72,68.92L56,48ZM56,208l72-68.92L200,208Z"></path>
+    </svg>
+  {% endcomment %}
+  {% comment %}
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      class='h-6 fill-stone-900 w-auto animate-[spin_1s_ease-in-out_infinite]'
+      viewBox='0 0 256 256'
+    >
+      <path d="M232,128a104,104,0,0,1-208,0c0-41,23.81-78.36,60.66-95.27a8,8,0,0,1,6.68,14.54C60.15,61.59,40,93.27,40,128a88,88,0,0,0,176,0c0-34.73-20.15-66.41-51.34-80.73a8,8,0,0,1,6.68-14.54C208.19,49.64,232,87,232,128Z"></path>
+    </svg>
+  {% endcomment %}
+  {% comment %}<svg{% endcomment %}
+  {% comment %}class='h-6 w-auto stroke-foreground'{% endcomment %}
+  {% comment %}stroke='currentColor'{% endcomment %}
+  {% comment %}viewBox='0 0 24 24'{% endcomment %}
+  {% comment %}xmlns='http://www.w3.org/2000/svg'{% endcomment %}
+  {% comment %}>{% endcomment %}
+  {% comment %}<g><circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round"><animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/><animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/></circle><animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/></g>{% endcomment %}
+  {% comment %}</svg>{% endcomment %}
+  <svg
+    class='h-12 w-auto animate-[spin_1s_ease-in-out_infinite]'
+    viewBox='0 0 218 218'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M109 218C108.782 157.875 60.065 109.202 0 109.202C60.199 109.202 109 60.31 109 0C109.217 60.125 157.935 108.798 218 108.798C157.8 108.798 109 157.69 109 218Z" fill="#4F4F4F"/>
+  </svg>
+</div>

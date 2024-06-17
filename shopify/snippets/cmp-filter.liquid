@@ -1,0 +1,222 @@
+{%- comment -%}
+  Renders a filter component
+
+  Accepts:
+    - object: {Object} - The object that holds filter data
+    - result_size: {Integer} - The number of results that match the filter
+    - enable_sorting: {Boolean} - Whether to enable sorting or not
+    - enable_filtering: {Boolean} - Whether to enable filtering or not
+
+  Usage:
+    {%- render 'cmp-filter',
+        object: collection,
+        result_size: collection.products.size,
+        enable_sorting: section.settings.enable_sorting,
+        enable_filtering: section.settings.enable_filtering
+    -%}
+{%- endcomment -%}
+
+<cmp-filter
+  {% if enable_sorting %}
+    data-sorting
+  {% endif %}
+  {% if enable_filtering %}
+    data-filtering
+  {% endif %}
+  data-id='filter'
+  data-section='{{ section.id }}'
+  class=' bg-stone-300/50 fixed inset-0 z-20 group/filter data-[open]:opacity-100 opacity-0 data-[open]:visible invisible transition-all duration-300 ease-in-out'
+>
+  <form
+    id='filter-drawer-{{ section.id }}'
+    data-id='filter-drawer-{{ section.id }}'
+    class='w-96 bg-stone-100 relative overflow-y-scroll text-stone-950 h-full'
+  >
+    <div class='border-b-[1px] px-6 py-5 border-stone-950/20 flex justify-between items-center'>
+      <h3 class='text-xl opacity-60 font-light'>
+        {{ result_size }}
+
+        result(s)
+      </h3>
+
+      <!-- Close button -->
+      <button data-id='filter-close-{{ section.id }}'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          class='w-5 h-5'
+          viewBox='0 0 256 256'
+        >
+          <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class='p-lg space-y-lg'>
+      <div>
+        <details class='group border-b-[1px] border-stone-950/20'>
+          <summary class='py-6 flex items-center justify-between'>
+            <div class='space-x-1'>
+              <span class='text-sm uppercase tracking-widest font-bold'>
+                Sort by
+              </span>
+            </div>
+
+            <div>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                class='w-4 h-4 group-open:rotate-180 transition-all duration-500 ease-in-out'
+                viewBox='0 0 256 256'
+              >
+                <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+              </svg>
+            </div>
+          </summary>
+          <div class='mb-6 space-y-4'>
+            <select
+              class='w-full border-[1px] text-sm bg-white/50 border-stone-300 rounded-md p-1'
+              name='sort_by'
+              id='sort-by'
+            >
+              {%- assign sort_by = object.sort_by
+                | default: object.default_sort_by
+              -%}
+
+              {%- for option in object.sort_options -%}
+                <option
+                  value='{{ option.value }}'
+                  {%- if option.value == sort_by -%}
+                    selected='selected'
+                  {%- endif -%}
+                >
+                  {{ option.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        </details>
+        {%- for filter in object.filters -%}
+          {%- liquid
+            # Variables
+            assign label = filter.label
+            assign active_values = filter.active_values
+            assign url_to_remove = filter.url_to_remove
+          -%}
+
+          <details class='group border-b-[1px] border-border/10'>
+            <summary class='py-6 flex items-center justify-between'>
+              <div class='space-x-1'>
+                <span class='text-sm uppercase tracking-widest font-bold'>
+                  {{- label -}}
+                </span>
+                {%- if active_values.size > 0 -%}
+                  <sup class='text-sm uppercase tracking-widest'>
+                    {{- active_values.size -}}
+                  </sup>
+                {%- endif -%}
+              </div>
+
+              <div>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  class='w-4 h-4 group-open:rotate-180 transition-all duration-500 ease-in-out'
+                  viewBox='0 0 256 256'
+                >
+                  <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                </svg>
+              </div>
+            </summary>
+
+            <div class='mb-6 space-y-4'>
+              {%- if active_values.size > 0 -%}
+                <div class='text-sm uppercase tracking-widest flex gap-2'>
+                  <p>{{ active_values.size }} selected</p>
+                  <p class='font-bold'><a href='{{ url_to_remove }}'>Reset</a></p>
+                </div>
+              {%- endif -%}
+
+              {%- render 'cmp-filter-options', filter: filter -%}
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+
+      <div class='text-sm uppercase tracking-widest font-light space-y-2'>
+        <p class='font-bold'>
+          <a href='{{ object.url }}?sort_by={{ object.sort_by }}'>Clear all</a>
+        </p>
+
+        {%- for filter in object.filters -%}
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value != null
+              or filter.max_value.value != null
+            -%}
+              <p>
+                <a class='flex gap-2 items-center' href='{{ filter.url_to_remove }}'>
+                  {%- assign min_value = filter.min_value.value | default: 0 -%}
+                  {%- assign max_value = filter.max_value.value
+                    | default: filter.range_max
+                  -%}
+                  <span>{{ min_value | money }} - {{ max_value | money }}</span>
+
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    class='w-3 h-3'
+                    viewBox='0 0 256 256'
+                  >
+                    <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+                  </svg>
+                </a>
+              </p>
+            {%- endif -%}
+          {%- else -%}
+            {%- for filter_value in filter.active_values -%}
+              <p>
+                <a
+                  class='flex gap-2 items-center'
+                  href='{{ filter_value.url_to_remove }}'
+                >
+                  <span>{{ filter.label }}: {{ filter_value.label }}</span>
+
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    class='w-3 h-3'
+                    viewBox='0 0 256 256'
+                  >
+                    <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+                  </svg>
+                </a>
+              </p>
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    {%- assign loader_id = 'filter-loading-' | append: section.id -%}
+    {%- render 'loading-overlay',
+      data_id: loader_id,
+      class: 'group-data-[loading]/filter:opacity-100 opacity-0 group-data-[loading]/filter:visible invisible'
+    -%}
+
+    <!-- Error message -->
+    {%- assign error_id = 'filter-error-' | append: section.id -%}
+    {%- render 'error-message',
+      data_id: error_id,
+      class: 'mx-lg group-data-[error]/filter:opacity-100 opacity-0 group-data-[error]/filter:block hidden group-data-[error]/filter:visible invisible'
+    -%}
+  </form>
+</cmp-filter>
+
+<!-- Open button -->
+<button
+  data-id='filter-open-{{ section.id }}'
+  class='fixed left-6 md:left-12 bottom-6 md:bottom-12 drop-shadow-md bg-stone-950 z-10 fill-stone-300 px-8 rounded-md py-3'
+>
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    class='w-5 h-5'
+    viewBox='0 0 256 256'
+  >
+    <path d="M64,105V40a8,8,0,0,0-16,0v65a32,32,0,0,0,0,62v49a8,8,0,0,0,16,0V167a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,56,152Zm80-95V40a8,8,0,0,0-16,0V57a32,32,0,0,0,0,62v97a8,8,0,0,0,16,0V119a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,128,104Zm104,64a32.06,32.06,0,0,0-24-31V40a8,8,0,0,0-16,0v97a32,32,0,0,0,0,62v17a8,8,0,0,0,16,0V199A32.06,32.06,0,0,0,232,168Zm-32,16a16,16,0,1,1,16-16A16,16,0,0,1,200,184Z"></path>
+  </svg>
+</button>

@@ -1,0 +1,203 @@
+{%- comment -%}
+  Renders a gift card recipient form
+
+  Accepts:
+    - product: {Object} Product object
+    - form: {Object} the product form object
+    - section: {Object} section to which this snippet belongs.
+
+  Usage:
+  {%-render 'cmp-recipient-form',
+    product: product,
+    form: form,
+    section: section,
+  -%}
+{%- endcomment -%}
+
+{% liquid
+  assign gift_card_recipient_control_flag = 'properties[__shopify_send_gift_card_to_recipient]'
+  assign recipient_form_checkbox = 'recipient.form.checkbox' | t
+  assign max_chars_message = 200
+  assign max_chars_message_rendered = 'recipient.form.max_characters' | t: max_chars: max_chars_message
+%}
+
+<cmp-recipient-form
+  class='block {{ class }}'
+  data-id='recipient-form'
+  data-section='{{ section.id }}'
+  data-product-variant-id='{{ product.selected_or_first_available_variant.id }}'
+>
+  <input
+    id='recipient-checkbox-{{ section.id }}'
+    type='checkbox'
+    class='hidden'
+    name='{{ gift_card_recipient_control_flag }}'
+  >
+
+  <cmp-accordion
+    data-id='accordion'
+    data-section='{{ section.id }}'
+    class='group/accordion'
+    role='region'
+    aria-labelledby='accordion-header-{{ section.id }}'
+  >
+    <!-- Accordion header -->
+    <button
+      data-id='accordion-header-{{ section.id }}'
+      aria-expanded='false'
+      aria-controls='accordion-content-{{ section.id }}'
+      aria-label='Toggle accordion'
+      class='flex w-full items-center justify-between hover:opacity-80 transition-all duration-300 ease-in-out cursor-pointer py-sm px-md rounded-xl drop-shadow-sm bg-accent text-on-accent'
+    >
+      <label
+        for='recipient-checkbox-{{ section.id }}'
+        class='tracking-widest uppercase font-light duration-[400ms] ease-in-out transition-all text-sm hover:opacity-60'
+      >
+        {{ recipient_form_checkbox }}
+      </label>
+
+      <!-- Minus icon -->
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 256 256'
+        class='hidden group-data-[expanded]/accordion:block h-3 w-auto'
+        fill='currentColor'
+      >
+        <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"></path>
+      </svg>
+
+      <!-- Plus icon -->
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 256 256'
+        fill='currentColor'
+        class='block group-data-[expanded]/accordion:hidden h-3 w-auto'
+      >
+        <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+      </svg>
+    </button>
+
+    <!-- Accordion content -->
+    <div
+      class='max-h-0 overflow-hidden transition-all duration-[400ms] ease-in-out prose-sm'
+      data-id='accordion-content-{{ section.id }}'
+      aria-hidden='true'
+      id='accordion-content-{{ section.id }}'
+    >
+      <div class='p-md space-y-sm drop-shadow-sm rounded-xl my-sm bg-accent text-on-accent'>
+        <div class='rounded-md border-[1px] border-on-primary'>
+          <input
+            type='email'
+            class='p-md transition-all duration-300 ease-in-out placeholder:text-on-accent rounded-xl bg-transparent w-full border-none hover:ring-2 bg-on focus:ring-2 hover:ring-stone-900/30 focus:ring-stone-900 outline-none'
+            name='properties[Recipient email]'
+            id='recipient-email-{{ section.id }}'
+            placeholder='{{ 'recipient.form.email' | t }}'
+            aria-label='{{ 'recipient.form.email' | t }}'
+            value='{{ form.email }}'
+            {% if form.errors contains 'email' %}
+              aria-invalid='true'
+              aria-describedby='recipient-form-email-error-{{ section.id }}'
+            {% endif %}
+          >
+          {% if form.errors contains 'email' %}
+            <div
+              id='recipient-form-email-error-{{ section.id }}'
+            >
+              <span class='text-sm text-error'>
+                {{ form.errors.messages.email }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class='rounded-md border-[1px] border-on-primary'>
+          <input
+            type='text'
+            autocomplete='name'
+            class='p-md transition-all duration-300 ease-in-out placeholder:text-on-accent rounded-md bg-transparent w-full border-none hover:ring-2 bg-on focus:ring-2 hover:ring-stone-900/30 focus:ring-stone-900 outline-none'
+            name='properties[Recipient name]'
+            id='recipient-name-{{ section.id }}'
+            placeholder='{{ 'recipient.form.name' | t }}'
+            aria-label='{{ 'recipient.form.name' | t }}'
+            value='{{ form.name }}'
+            {% if form.errors contains 'name' %}
+              aria-invalid='true'
+              aria-describedby='recipient-form-name-error-{{ section.id }}'
+            {% endif %}
+          >
+          {% if form.errors contains 'name' %}
+            <div
+              id='recipient-form-name-error-{{ section.id }}'
+            >
+              <span class='text-sm text-error'>
+                {{ form.errors.messages.name }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div>
+          <div class='rounded-xl border-[1px] border-on-primary'>
+            <textarea
+              rows='10'
+              class='p-md transition-all duration-300 ease-in-out placeholder:text-on-accent rounded-md bg-transparent w-full border-none hover:ring-2 bg-on focus:ring-2 hover:ring-stone-900/30 focus:ring-stone-900 outline-none'
+              name='properties[Message]'
+              id='recipient-name-{{ section.id }}'
+              placeholder='{{ 'recipient.form.message' | t }}'
+              aria-label='{{ 'recipient.form.message' | t }}'
+              maxlength
+              {% if form.errors contains 'name' %}
+                aria-invalid='true'
+                aria-describedby='recipient-form-message-error-{{ section.id }}'
+              {% endif %}
+            >{{ form.message }}</textarea>
+            {% if form.errors contains 'message' %}
+              <div
+                id='recipient-form-message-error-{{ section.id }}'
+              >
+                <span class='text-sm text-error'>
+                  {{ form.errors.messages.name }}
+                </span>
+              </div>
+            {% endif %}
+          </div>
+          <small>{{ max_chars_message_rendered }}</small>
+        </div>
+
+        <div class='rounded-md border-[1px] border-on-primary'>
+          <input
+            type='date'
+            autocomplete='send_on'
+            class='p-md transition-all duration-300 ease-in-out placeholder:text-on-accent rounded-md bg-transparent w-full border-none hover:ring-2 bg-on focus:ring-2 hover:ring-stone-900/30 focus:ring-stone-900 outline-none'
+            name='properties[Send on]'
+            id='recipient-send-on-{{ section.id }}'
+            placeholder='{{ 'recipient.form.send_on' | t }}'
+            aria-label='{{ 'recipient.form.send_on' | t }}'
+            pattern='\d{4}-\d{2}-\d{2}'
+            value='{{ form.send_on }}'
+            {% if form.errors contains 'send_on' %}
+              aria-invalid='true'
+              aria-describedby='recipient-form-send_on-error-{{ section.id }}'
+            {% endif %}
+          >
+          {% if form.errors contains 'send_on' %}
+            <div
+              id='recipient-form-send_on-error-{{ section.id }}'
+            >
+              <span class='text-sm text-error'>
+                {{ form.errors.messages.send_on }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </cmp-accordion>
+  <input
+    type='hidden'
+    name='properties[__shopify_offset]'
+    value=''
+    id='recipient-timezone-offset-{{ section.id }}'
+    disabled
+  >
+</cmp-recipient-form>

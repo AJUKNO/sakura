@@ -1,0 +1,122 @@
+{%- comment -%}
+  Renders a cart drawer component
+
+  Usage:
+    {%- render 'cmp-cart-drawer' -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign cart_empty = 'sections.cart.empty' | t
+  assign accessibility_close = 'accessibility.close' | t
+  assign continue_shopping = 'general.continue_shopping' | t
+  assign login_title = 'sections.cart.login.title' | t
+  assign login_paragraph = 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url
+  assign form_id = 'cart-drawer-form'
+%}
+
+<cmp-cart-drawer
+  data-id='cart-drawer'
+  class='group/parent'
+>
+  <div
+    data-id='cart-drawer-overlay'
+    class='bg-foreground/60 transition-all duration-[600ms] ease-in-out group-data-[open]/parent:visible invisible group-data-[open]/parent:opacity-100 opacity-0 group-data-[open]/parent:pointer-events-auto pointer-events-none fixed inset-0 z-30'
+  ></div>
+
+  {% comment %} Cart Drawer {% endcomment %}
+  <cmp-cart
+    data-id='cart-drawer-menu'
+    class='bottom-0 w-[36rem] backdrop-blur-lg fixed z-40 right-0 top-0 group-data-[open]/parent:translate-x-0 transition-all duration-[600ms] ease-in-out translate-x-full group/menu bg-foreground/80 text-background overflow-y-auto'
+  >
+    {% comment %} Header {% endcomment %}
+    <div
+      class=' h-20 sticky z-10 top-0 p-md py-md flex justify-between items-center'
+    >
+      <h3
+        data-id='cart-drawer-title'
+        class=' font-black flex items-center gap-sm uppercase'
+      >
+        <span>Cart</span>
+        {%- if cart != empty -%}
+          <sup class='text-xs'>{{ cart.item_count }}</sup>
+        {%- endif -%}
+      </h3>
+      <button
+        aria-label='{{ accessibility_close }}'
+        data-id='cart-drawer-close-button'
+        class='hover:rotate-90 hover:opacity-50 transition-all duration-[400ms] ease-in-out'
+      >
+        <svg
+          class='w-auto h-6'
+          viewBox='0 0 152 168'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M97.1014 47.0755C140.786 -3.51857 183.417 71.3187 118.154 83.4401C183.417 96.0887 140.26 170.399 97.1014 119.804C119.207 183.047 33.4167 182.52 55.5222 119.804C11.8376 170.399 -30.7942 96.0887 34.4693 83.4401C-31.3205 71.3187 11.8376 -2.99156 55.5222 47.0755C32.8904 -15.6401 119.207 -15.6401 97.1014 47.0755ZM76.0483 73.9537C81.3119 73.9537 86.0485 78.17 86.0485 83.4401C86.0485 88.7102 81.3119 93.4537 76.0483 93.4537C70.7853 93.4537 66.5744 88.7102 66.5744 83.4401C66.5744 78.17 70.7853 73.9537 76.0483 73.9537Z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Items -->
+    <div data-id='cart-drawer-items' class='p-md'>
+      {%- if cart == empty -%}
+        <div>
+          <h2 class='text-xl'>{{ cart_empty }}</h2>
+          <a href='{{ routes.all_products_collection_url }}'>
+            {{ continue_shopping }}
+          </a>
+          {%- if shop.customer_accounts_enabled and customer == null -%}
+            <h2 class='font-light uppercase tracking-widest text-xs'>
+              {{ login_title }}
+            </h2>
+            <p class='font-light uppercase tracking-widest text-xs'>
+              {{ login_paragraph }}
+            </p>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <form
+          data-id='{{ form_id }}'
+          method='post'
+          id='{{ form_id }}'
+          class='space-y-md'
+          action='{{ routes.cart_url }}'
+        >
+          {%- for item in cart.items -%}
+            {%- render 'cmp-cart-item',
+              item: item,
+              style: 'drawer',
+              form_id: form_id
+            -%}
+          {%- endfor -%}
+        </form>
+      {%- endif -%}
+    </div>
+
+    <!-- Footer -->
+    <div
+      data-id='cart-drawer-footer'
+      class='border-t-[1px] backdrop-blur-lg bg-foreground/90 flex-col border-border/10 p-md flex sticky bottom-0 space-y-md'
+    >
+      {%- if cart != empty -%}
+        {%- if settings.show_cart_note -%}
+          <!-- Note -->
+          {%- render 'cart-note', form_id: form_id -%}
+        {%- endif -%}
+        {%- render 'cart-subtotal' -%}
+        {%- render 'cart-cta', form_id: form_id -%}
+      {%- endif -%}
+
+      {%- assign error_id = 'cart-drawer-menu-error-' | append: section.id -%}
+      {%- render 'error-message',
+        data_id: error_id,
+        class: 'group-data-[error]/menu:opacity-100 opacity-0 group-data-[error]/menu:flex hidden group-data-[error]/menu:visible invisible'
+      -%}
+    </div>
+
+    {%- render 'loading-overlay',
+      data_id: 'cart-drawer-loading',
+      class: 'group-data-[loading]/menu:opacity-100 opacity-0 group-data-[loading]/menu:visible invisible'
+    -%}
+  </cmp-cart>
+</cmp-cart-drawer>

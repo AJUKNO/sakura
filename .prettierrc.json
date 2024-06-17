@@ -1,0 +1,22 @@
+{
+  "bracketSpacing": true,
+  "printWidth": 85,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "semi": false,
+  "trailingComma": "all",
+  "bracketSameLine": false,
+  "plugins": [
+    "@shopify/prettier-plugin-liquid"
+  ],
+  "overrides": [
+    {
+      "files": "*.liquid",
+      "options": {
+        "bracketSpacing": true,
+        "tabWidth": 2,
+        "singleQuote": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{%- comment -%}
+  Renders a product description
+
+  Accepts:
+  - block: {Object} - the block to render
+  - product: {Object} - the product to render
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-description',
+        block: block,
+        product: product
+        data_id: 'product-description'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign description = product.description
+  assign attributes = block.shopify_attributes
+%}
+
+{%- if description != blank -%}
+  <div
+    class='{{ class }}'
+    data-id='{{ data_id }}'
+    {{ attributes }}
+  >
+    <div class='prose text-foreground'>
+      {{ description }}
+    </div>
+  </div>
+{%- endif -%}

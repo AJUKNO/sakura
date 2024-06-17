@@ -1,0 +1,35 @@
+{%- comment -%}
+  Renders a product quantity selector
+
+  Accepts:
+  - block: {Object} - the block to render
+  - section: {Object} - the block to render
+  - product: {Object} - the product to render
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-quantity-selector',
+        block: block,
+        product: product
+        section: section
+        data_id: 'product-quantity-selector'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign attributes = block.shopify_attributes
+-%}
+
+<div
+  data-id='{{ data_id }}'
+  {{ attributes }}
+  class='{{ class }}'
+>
+  {%- assign product_form_id = 'product-form-' | append: section.id -%}
+  {%- render 'cmp-quantity-selector',
+    product: product,
+    section: section,
+    value: product.selected_or_first_available_variant.quantity_rule.min,
+    form_id: product_form_id
+  -%}
+</div>

@@ -1,0 +1,93 @@
+{%- comment -%}
+  Renders a product description
+
+  Accepts:
+  - block: {Object} - the block to render
+  - product: {Object} - the product to render
+  - section: {Object} - the section to render
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-inventory',
+        block: block,
+        product: product
+        section: section
+        data_id: 'product-inventory'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign attributes = block.shopify_attributes
+  assign target = product.selected_or_first_available_variant
+  assign inventory_threshold = block.settings.inventory_threshold
+  assign show_inventory_quantity = block.settings.show_inventory_quantity
+
+  assign inventory_low_stock_show_count = 'products.product.inventory_low_stock_show_count' | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+  assign inventory_low_stock = 'products.product.inventory_low_stock' | t
+  assign inventory_in_stock = 'products.product.inventory_in_stock' | t
+  assign inventory_in_stock_show_count = 'products.product.inventory_in_stock_show_count' | t: quantity: product.selected_or_first_available_variant.inventory_quantity
+  assign inventory_out_of_stock = 'products.product.inventory_out_of_stock' | t
+  assign inventory_out_of_stock_continue_selling = 'products.product.inventory_out_of_stock_continue_selling' | t
+%}
+
+<div
+  data-id='{{ data_id }}'
+  {{ attributes }}
+  class='{{ class }}'
+>
+  {%- if target.inventory_management == 'shopify' -%}
+    <p
+      role='status'
+      class='flex gap-2 uppercase items-center font-bold tracking-widest'
+    >
+      {%- comment -%}
+        If the product has inventory management set to Shopify, we can use the inventory_quantity
+      {%- endcomment -%}
+      {%- if target.inventory_quantity > 0 -%}
+        {%- comment -%}
+          If the product has inventory_quantity greater than 0, we can show the product is in stock
+        {%- endcomment -%}
+        {%- if target.inventory_quantity <= inventory_threshold -%}
+          <svg class='animate-pulse h-4 w-4' aria-hidden='true'>
+            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(238,148,65, 0.3)"/>
+            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(238,148,65)"/>
+          </svg>
+
+          {%- if show_inventory_quantity -%}
+            {{ inventory_low_stock_show_count }}
+          {%- else -%}
+            {{ inventory_low_stock }}
+          {%- endif -%}
+
+        {%- else -%}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-4 w-auto fill-success animate-pulse'
+            viewBox='0 0 256 256'
+          >
+            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm78.37,64H170.94a142.39,142.39,0,0,0-20.26-45A88.37,88.37,0,0,1,206.37,88ZM128,40.11c12,13,21,29.55,26.37,47.89H101.63C107,69.66,116,53.13,128,40.11ZM96,128a145.29,145.29,0,0,1,2-24h60a145.72,145.72,0,0,1,0,48H98A145.29,145.29,0,0,1,96,128Zm5.63,40h52.74C149,186.34,140,202.87,128,215.89,116,202.87,107,186.34,101.63,168Zm49.05,45a142.39,142.39,0,0,0,20.26-45h35.43A88.37,88.37,0,0,1,150.68,213Zm23.53-61a161.79,161.79,0,0,0,0-48h38.46a88.15,88.15,0,0,1,0,48Z"></path>
+          </svg>
+          {%- if show_inventory_quantity -%}
+            {{ inventory_in_stock_show_count }}
+          {%- else -%}
+            {{ inventory_in_stock }}
+          {%- endif -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- if target.inventory_policy == 'continue' -%}
+          <svg class='animate-pulse' width='15' height='15' aria-hidden='true'>
+            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(62,214,96, 0.3)"/>
+            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(62,214,96)"/>
+          </svg>
+          {{ inventory_out_of_stock_continue_selling }}
+        {%- else -%}
+          <svg class='animate-pulse' width='15' height='15' aria-hidden='true'>
+            <circle cx="7.5" cy="7.5" r="7.5" fill="rgb(200,200,200, 0.3)"/>
+            <circle cx="7.5" cy="7.5" r="5" stroke="rgb(255, 255, 255)" stroke-width="1" fill="rgb(200,200,200)"/>
+          </svg>
+          {{ inventory_out_of_stock }}
+        {%- endif -%}
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+</div>

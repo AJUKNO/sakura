@@ -1,0 +1,107 @@
+{%- comment -%}
+  Renders a quantity selector
+
+  Accepts:
+  - product: {Object} Product object
+  - section: {Object} Section object
+  - form_id: {String} Form ID
+  - class: {String} Additional classes
+
+  Usage:
+  {%- render 'cmp-quantity-selector',
+    product: product,
+    section: section,
+    value: value,
+    form_id: product_form_id,
+    class: 'mb-md'
+  -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign target = product.selected_or_first_available_variant
+
+  # Enable theme-check once item_count_for_variant is accepted as a valid filter
+
+  # theme-check-disable
+  assign cart_qty = cart | item_count_for_variant: target.id
+  # theme-check-enable
+
+  assign quantity_rule_min = target.quantity_rule.min
+  assign quantity_rule_max = target.quantity_rule.max
+  assign quantity_rule_increment = target.quantity_rule.increment
+
+  assign decrease_label = 'products.product.quantity.decrease' | t: product: product.title | escape
+  assign increase_label = 'products.product.quantity.increase' | t: product: product.title | escape
+  assign input_label = 'products.product.quantity.input' | t: product: product.title
+-%}
+
+<cmp-quantity-selector
+  data-id='quantity-selector'
+  data-section='{{ section.id }}'
+  class='group/quantity relative quantity-selector {{ class }}'
+>
+  <!-- Decrease -->
+  <button
+    type='button'
+    class='flex-grow p-sm rounded-md flex items-center justify-center'
+    name='decrease'
+    data-id='quantity-selector-decrease-{{ section.id }}'
+    aria-label='{{ decrease_label }}'
+  >
+    <span class='sr-only'>
+      {{ decrease_label }}
+    </span>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 256 256'
+      class='h-4 w-auto fill-current'
+    >
+      <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"></path>
+    </svg>
+  </button>
+
+  <!-- Quantity input -->
+  <label
+    for='quantity-selector-input-{{ section.id }}-{{ item.id }}'
+    class='sr-only'
+  >
+    {{ input_label }}
+  </label>
+  <input
+    type='number'
+    name='quantity'
+    class='w-6 text-center rounded-md bg-transparent'
+    data-id='quantity-selector-input-{{ section.id }}'
+    id='quantity-selector-input-{{ section.id }}-{{ item.id }}'
+    data-cart-quantity='{{ cart_qty }}'
+    data-min='{{ quantity_rule_min }}'
+    min='{{ quantity_rule_min }}'
+    {%- if quantity_rule_max != null -%}
+      data-max='{{ quantity_rule_max }}'
+      max='{{ quantity_rule_max }}'
+    {%- endif -%}
+    step='{{ quantity_rule_increment }}'
+    value='{%- if value -%}{{ value }}{%- else -%}{{ cart_qty }}{%- endif -%}'
+    form='{{ form_id }}'
+  >
+
+  <!-- Increase -->
+  <button
+    type='button'
+    name='increase'
+    data-id='quantity-selector-increase-{{ section.id }}'
+    class='flex-grow p-sm rounded-md flex items-center justify-center'
+    aria-label='{{ increase_label }}'
+  >
+    <span class='sr-only'>
+      {{ increase_label }}
+    </span>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 256 256'
+      class='h-4 w-auto fill-current'
+    >
+      <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+    </svg>
+  </button>
+</cmp-quantity-selector>

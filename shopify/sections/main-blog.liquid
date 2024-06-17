@@ -1,0 +1,147 @@
+{%- comment -%}
+  Blog section
+
+  The blog page section is used to display a list of blog articles.
+
+  Usage:
+    - title: Title for the blog page.
+    - size: Number of articles in the blog.
+    - blog_empty: Message to display when the blog is empty.
+    - blog_title: Title for the blog page.
+    - section_id: The section ID.
+{%- endcomment -%}
+
+{%- liquid
+  assign title = blog.title | escape
+  assign size = blog.articles.size
+  assign blog_empty = 'sections.blog_template.empty' | t
+  assign blog_title = 'sections.blog_template.title' | t
+-%}
+
+<section
+  class='flex flex-col'
+>
+  {% comment %} Blog header {% endcomment %}
+  <div class='p-lg'>
+    <h1 class='text-2xl flex items-center gap-sm'>
+      <span class='sr-only'>{{ blog_title }}</span>
+      {{ title }}
+      <sup class='text-lg'>{{ size }}</sup>
+    </h1>
+  </div>
+
+  {%- if blog.articles_count == 0 -%}
+    {% comment %} Blog empty {% endcomment %}
+    <div class='p-lg border-t-[1px] border-border/10'>
+      <h2 class='text-xl'>{{ blog_empty }}</h2>
+    </div>
+  {%- else -%}
+    {% comment %} Blog grid {% endcomment %}
+    {%- # theme-check-disable UndefinedObject -%}
+    {%- render 'blog-grid',
+      blog: blog,
+      paginate: paginate,
+      section: section,
+      infinite_scroll: section.settings.infinite_scroll,
+      items_per_page: section.settings.items_per_page,
+      show_image: section.settings.show_image,
+      show_excerpt: section.settings.show_excerpt,
+      show_author: section.settings.show_author,
+      show_date: section.settings.show_date,
+      show_badge: section.settings.show_badge,
+      lazy_load: section.settings.lazy_load,
+      show_comments: section.settings.show_comments,
+      show_tags: section.settings.show_tags
+    -%}
+    {%- # theme-check-enable UndefinedObject -%}
+  {%- endif -%}
+</section>
+
+{%- schema -%}
+{
+  "name": "t:sections.main-blog.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "lazy_load",
+      "label": "t:sections.general.lazy_load.label",
+      "default": true,
+      "info": "t:sections.general.lazy_load.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "infinite_scroll",
+      "label": "t:sections.general.infinite_scroll.label",
+      "default": true,
+      "info": "t:sections.general.infinite_scroll.info"
+    },
+    {
+      "type": "range",
+      "id": "items_per_page",
+      "label": "t:sections.general.items_per_page.label",
+      "default": 6,
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "info": "t:sections.general.items_per_page.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.card-article.header.content"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.card-article.paragraph.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:sections.card-article.show_author.label",
+      "default": true,
+      "info": "t:sections.card-article.show_author.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "t:sections.card-article.show_date.label",
+      "default": true,
+      "info": "t:sections.card-article.show_date.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "t:sections.card-article.show_image.label",
+      "default": true,
+      "info": "t:sections.card-article.show_image.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "t:sections.card-article.show_tags.label",
+      "default": true,
+      "info": "t:sections.card-article.show_tags.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "t:sections.card-article.show_excerpt.label",
+      "default": true,
+      "info": "t:sections.card-article.show_excerpt.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "t:sections.card-article.show_badge.label",
+      "default": true,
+      "info": "t:sections.card-article.show_badge.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "t:sections.card-article.show_comments.label",
+      "default": true,
+      "info": "t:sections.card-article.show_comments.info"
+    }
+  ]
+}
+{%- endschema -%}

@@ -1,0 +1,25 @@
+{%- comment -%}
+  Renders pickup availability
+
+  Accepts:
+    - product: {Object} - the product to render
+    - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'cmp-pickup-availability',
+        product: product,
+        data_id: 'product-buy-buttons'
+    -%}
+{%- endcomment -%}
+
+<cmp-pickup-availability
+  data-id='{{ data_id }}'
+  class='block'
+  {% if product.selected_or_first_available_variant.available
+    and pick_up_availabilities.size > 0
+  %}
+    data-available
+  {% endif %}
+  data-variant-id='{{ product.selected_or_first_available_variant.id }}'
+>
+</cmp-pickup-availability>

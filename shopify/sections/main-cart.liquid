@@ -1,0 +1,160 @@
+{%- comment -%}
+  Cart section
+
+  The cart section is used to display the cart items and the cart actions.
+
+  Usage:
+    - title: Title for the cart page.
+    - empty_label: Label for when the cart is empty.
+    - login_title: Title for when the customer is not logged in.
+    - login_paragraph: Paragraph for when the customer is not logged in.
+    - heading_product: Heading for the product column.
+    - heading_total: Heading for the total column.
+    - heading_quantity: Heading for the quantity column.
+{%- endcomment -%}
+
+{%- liquid
+  assign section_id = 'section-' | append: section.id
+  assign form_id = 'cart-form'
+
+  assign title = 'sections.cart.title' | t
+  assign empty_label = 'sections.cart.empty' | t
+  assign login_title = 'sections.cart.login.title' | t
+  assign login_paragraph = 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url
+
+  assign heading_product = 'sections.cart.headings.product' | t
+  assign heading_total = 'sections.cart.headings.total' | t
+  assign heading_quantity = 'sections.cart.headings.quantity' | t
+-%}
+
+<section
+  id='{{ section_id}}'
+  class='flex flex-col'
+>
+  <cmp-cart
+    data-id='cart'
+    data-section='{{ section.id }}'
+    data-loading='false'
+    data-error='false'
+    class='flex flex-col'
+  >
+    <!-- Cart header -->
+    <div data-id='cart-header' class='p-lg border-b-[1px] border-border/10'>
+      <h1 class='text-5xl'>
+        {% if cart == empty %}
+          {{ empty_label }}
+        {% else %}
+          {{ title }}
+        {% endif %}
+      </h1>
+      <a
+        class='font-light text-sm'
+        href='{{ routes.all_products_collection_url }}'
+      >
+        {{- 'general.continue_shopping' | t -}}
+      </a>
+      {%- if shop.customer_accounts_enabled and customer == null -%}
+        <h2 class='font-light text-sm'>
+          {{ login_title }}
+        </h2>
+        <p class='font-light text-sm'>
+          {{ login_paragraph }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <!-- Cart form -->
+    <form
+      action='{{ routes.cart_url }}'
+      method='post'
+      data-id='cart-form'
+      id='{{ form_id }}'
+      class='p-lg flex-grow {% if cart == empty %}hidden{% endif %}'
+    >
+      {% if cart != empty %}
+        <div class='space-y-md'>
+          {% comment %} Header {% endcomment %}
+          <div class='grid grid-cols-6 gap-md'>
+            <span class='col-span-4 text-xs uppercase tracking-widest font-bold'>
+              {{ heading_product }}
+            </span>
+            <span class='text-xs uppercase tracking-widest font-bold'>
+              {{ heading_quantity }}
+            </span>
+            <span class='text-xs uppercase tracking-widest font-bold'>
+              {{ heading_total }}
+            </span>
+          </div>
+
+          {% comment %} Items {% endcomment %}
+          <div id='cart-items' class='flex gap-md flex-col'>
+            {% for item in cart.items %}
+              {% render 'cmp-cart-item', item: item, style: 'page' %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </form>
+
+    <!-- Cart footer -->
+    <div
+      class='border-b-[1px] sticky bottom-0 z-10 bg-primary border-t-[1px] border-border/10 grid grid-cols-3'
+    >
+      <div
+        data-id='cart-footer'
+        class='border-r-[1px] border-border/10 p-lg'
+      >
+        {% if settings.show_cart_note %}
+          <!-- Note -->
+          {% render 'cart-note', form_id: form_id %}
+        {% endif %}
+
+        {% comment %} Blocks {% endcomment %}
+        <div class='space-y-lg'>
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when '@app' %}
+                {% render block %}
+              {% when 'subtotal' %}
+                {% render 'cart-subtotal', block: block %}
+              {% else %}
+                {% render 'cart-cta', block: block, form_id: form_id %}
+            {% endcase %}
+          {% endfor %}
+        </div>
+
+        {% comment %} Errors {% endcomment %}
+        <div id='cart-errors-{{ section_id }}'></div>
+      </div>
+      <div class='p-lg col-span-2 prose-lg font-light'>
+        <p>
+          This is a modern, easy-to-wear piece based on the design source of the U.S.
+          Army's M-65 Fishtail Parka. The collar has been arranged as a stand collar,
+          and tabs have been added to create an original design for a more masculine
+          fit.
+        </p>
+      </div>
+    </div>
+  </cmp-cart>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart.name",
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "checkout-buttons",
+      "name": "t:sections.main-cart.blocks.checkout_buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,114 @@
+{%- comment -%}
+  Renders a card product
+
+  Accepts:
+    - product: {Object} - The product to render
+    - lazy_load: {Boolean} - Whether to lazy load the images or not
+    - show_secondary_image: {Boolean} - Whether to show the secondary image or not
+    - show_badges: {Boolean} - Whether to show the badges or not
+    - show_price: {Boolean} - Whether to show the price or not
+    - show_vendor: {Boolean} - Whether to show the vendor or not
+
+  Usage:
+    {%- render 'card-product',
+        product: product,
+        lazy_load: true,
+        show_price: true,
+        show_vendor: true,
+        show_secondary_image: true,
+        show_badges: true
+    -%}
+{%- endcomment -%}
+
+{%- if product and product != empty -%}
+  {%- liquid
+    assign media = product.featured_media
+
+    if product.media.size > 0 and show_secondary_image
+      assign secondary_image = product.media[1]
+    endif
+    assign url = product.url
+    assign title = product.title | escape
+    assign available = product.available
+    assign compare_at_price = product.compare_at_price
+    assign price = product.price
+    assign vendor = product.vendor
+
+    assign sold_out = 'products.product.sold_out' | t
+    assign on_sale = 'products.product.on_sale' | t
+  -%}
+
+  <div
+    {%- comment -%} data-barba-prevent='all' {%- endcomment -%}
+  >
+    <!-- Product media -->
+    <a
+      href='{{ url }}'
+      class='aspect-w-2 group/item block aspect-h-3 relative transition-opacity duration-500 ease-in-out'
+    >
+      {%- if media -%}
+        <!-- Featured media -->
+        <div
+          {% if secondary_image != null and show_secondary_image %}
+            class='group-hover/item:opacity-0 transition-all duration-300 ease-in-out'
+          {% endif %}
+          data-animate='fade-in'
+          data-animate-repeat
+        >
+          {%- render 'cmp-media',
+            media: media,
+            loading: loading,
+            class: 'media--fill'
+          -%}
+        </div>
+
+        {%- if secondary_image != null and show_secondary_image -%}
+          <!-- Secondary media -->
+          <div class='group-hover/item:visible group-hover/item:opacity-100 opacity-0 invisible transition-all duration-300 ease-in-out'>
+            {%- render 'cmp-media',
+              media: secondary_image,
+              lazy_load: false,
+              class: 'media--fill'
+            -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if show_badges -%}
+        <!-- Badges -->
+        <div class='absolute inset-0 flex justify-end h-fit'>
+          {%- if available == false -%}
+            <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-bl-lg bg-indigo-500 drop-shadow-sm text-stone-100'>
+              {{ sold_out }}
+            </span>
+          {%- elsif compare_at_price > price and available -%}
+            <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-bl-lg bg-orange-500 drop-shadow-sm text-stone-100'>
+              {{ on_sale }}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </a>
+
+    <!-- Product info -->
+    <div class='py-4 space-y-3'>
+      {%- if show_vendor and vendor != null -%}
+        <div
+          class='text-[0.6rem] uppercase flex items-center gap-1 tracking-widest font-light'
+        >
+          <span class='sr-only'>{{ 'accessibility.vendor' | t }}</span>
+          <span class='opacity-60 hover:opacity-100 trs-opacity'>
+            {{ vendor }}
+          </span>
+        </div>
+      {%- endif -%}
+      <h3 class='font-black uppercase trs-opacity hover:opacity-60'>
+        <a href='{{ url }}'>
+          {{ title }}
+        </a>
+      </h3>
+
+      {%- render 'price', product: product -%}
+    </div>
+  </div>
+{%- endif -%}

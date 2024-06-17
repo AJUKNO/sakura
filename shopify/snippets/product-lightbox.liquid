@@ -1,0 +1,53 @@
+{%- comment -%}
+  Renders a product lightbox
+
+  Accepts:
+    - media: {Object} - the media to render
+    - section: {Object} - the section to render
+    - class: {String} - the class to apply to
+
+  Usage:
+    {%- render 'product-lightbox',
+        media: media,
+        section: section,
+        class: 'prose-sm'
+    -%}
+{%- endcomment -%}
+
+<cmp-lightbox
+  data-open='false'
+  class='fixed block data-[open=false]:hidden data-[open=false]:opacity-0 inset-0 overflow-y-auto bg-primary z-30'
+>
+  {%- for media in product.media -%}
+    {% case media.media_type %}
+      {% when 'image' %}
+        <div data-media-id='{{ media.id }}'>
+          {% render 'cmp-media',
+            media: media,
+            lazy_load: false,
+            class: 'media--fill'
+          %}
+        </div>
+      {% when 'external_video' %}
+        <div>
+          {{ media | external_video_tag }}
+        </div>
+      {% when 'video' %}
+        <div data-media-id='{{ media.id }}'>
+          {% render 'cmp-media',
+            media: media,
+            lazy_load: false,
+            class: 'media--fill'
+          %}
+        </div>
+      {% when 'model' %}
+        <div data-media-id='{{ media.id }}'>
+          {{ media | model_viewer_tag }}
+        </div>
+      {% else %}
+        <div data-media-id='{{ media.id }}'>
+          {{ media | media_tag }}
+        </div>
+    {% endcase %}
+  {%- endfor -%}
+</cmp-lightbox>

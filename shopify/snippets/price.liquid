@@ -1,0 +1,105 @@
+{%- comment -%}
+  Renders a price component
+
+  Accepts:
+    - product: {Object} - The product to render
+    - show_badges: {Boolean} - Whether to show badges
+    - use_variant: {Boolean} - Whether to use the selected variant
+
+  Usage:
+    {%- render 'price',
+        product: product,
+        show_badges: true,
+        use_variant: true,
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign price_min = product.price_min
+  assign price_max = product.price_max
+  assign available = target.available | default: false
+  assign money_price = price | money
+  assign money_price_min = price_min | money
+  assign money_price_max = price_max | money
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+    assign money_price_min = price_min | money_with_currency
+    assign money_price_max = price_max | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  assign price_varies = product.price_varies
+  assign compare_at_price_varies = product.compare_at_price_varies
+  assign quantity_price_breaks_configured = product.quantity_price_breaks_configured?
+
+  assign regular_price = 'products.product.price.regular_price' | t
+  assign sale_price = 'products.product.price.sale_price' | t
+%}
+
+<div class='flex items-center gap-2 uppercase'>
+  {%- comment -%}
+    Regular price:
+    If no sale price is set, show the regular price.
+  {%- endcomment -%}
+
+  {%- if compare_at_price > price and quantity_price_breaks_configured != true -%}
+    {%- comment -%} Sale price {%- endcomment -%}
+    {%- unless price_varies == false and compare_at_price_varies -%}
+      <span class='sr-only'>{{ regular_price }}</span>
+      <span>
+        <s class='opacity-60'>
+          {%- if settings.currency_code_enabled -%}
+            {{ compare_at_price | money_with_currency }}
+          {%- else -%}
+            {{ compare_at_price | money }}
+          {%- endif -%}
+        </s>
+      </span>
+    {%- endunless -%}
+    <span class='sr-only'>{{ sale_price }}</span>
+    <span class='font-bold'>
+      {{ money_price }}
+    </span>
+  {%- else -%}
+    {%- comment -%} Regular price {%- endcomment -%}
+    {%- if quantity_price_breaks_configured -%}
+      {%- comment -%}
+        TODO: Add quantity price breaks
+      {%- endcomment -%}
+    {%- else -%}
+      <span class='sr-only'>{{ regular_price }}</span>
+      <span>
+        {{ money_price }}
+      </span>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- comment -%}
+    TODO: Add unit prices, only for Germany and France
+  {%- endcomment -%}
+
+  {%- if show_badges -%}
+    {%- if available == false -%}
+      <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-lg bg-indigo-500 drop-shadow-sm text-stone-100'>
+        {{ 'products.product.sold_out' | t }}
+      </span>
+    {%- elsif compare_at_price > price
+      and quantity_price_breaks_configured != true
+    -%}
+      <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-lg bg-orange-500 drop-shadow-sm text-stone-100'>
+        {{ 'products.product.on_sale' | t }}
+      </span>
+    {%- endif -%}
+  {%- endif -%}
+</div>

@@ -1,0 +1,95 @@
+{%- comment -%}
+  Renders a blog grid
+
+  Accepts:
+  - blog: {Object} - the product to render
+  - paginate: {Object} - the paginate object
+  - section: {String} - the section to render
+  - infinite_scroll: {Boolean} - whether to use infinite scroll or not
+  - show_image: {Boolean} - whether to show the image or not
+  - show_author: {Boolean} - whether to show the author or not
+  - show_date: {Boolean} - whether to show the date or not
+  - show_excerpt: {Boolean} - whether to show the excerpt or not
+  - show_badge: {Boolean} - whether to show the badge or not
+  - lazy_load: {Boolean} - whether to lazy load the images or not
+  - show_comments: {Boolean} - whether to show the comments or not
+  - show_tags: {Boolean} - whether to show the tags or not
+  - posts_per_page: {Number} - the number of posts per page
+
+  Usage:
+    {%- render 'blog-grid',
+        blog: blog,
+        paginate: paginate,
+        section: section,
+        items_per_page: 6,
+        show_image: show_image,
+        show_author: show_author,
+        show_date: show_date,
+        show_excerpt: show_excerpt,
+        show_badge: show_badge,
+        lazy_load: lazy_load,
+        show_comments: show_comments,
+        show_tags: show_tags
+    -%}
+{%- endcomment -%}
+
+{%- paginate blog.articles by items_per_page -%}
+  <cmp-paginator
+    class='block group/paginator relative'
+    {% if infinite_scroll %}
+      data-enabled
+    {% endif %}
+    data-section='{{ section.id }}'
+    data-id='paginator'
+  >
+    <div
+      data-id='paginator-container-{{ section.id }}'
+      class='grid grid-cols-2 gap-sm md:gap-lg p-sm md:p-lg border-t-[1px] border-border/10'
+    >
+      {%- for article in blog.articles -%}
+        {% comment %} Load the first two items eagerly {% endcomment %}
+        {% liquid
+          if forloop.index > 2 and lazy_load == true
+            assign lazy = 'lazy'
+          else
+            assign lazy = 'eager'
+          endif
+        %}
+        {%- render 'card-article',
+          blog: blog,
+          article: article,
+          show_image: show_image,
+          show_author: show_author,
+          show_date: show_date,
+          show_excerpt: show_excerpt,
+          show_badge: show_badge,
+          lazy_load: lazy,
+          show_comments: show_comments,
+          show_tags: show_tags
+        -%}
+      {%- endfor -%}
+    </div>
+
+    <!-- Loading overlay -->
+    {%- assign loader_id = 'paginator-loader-' | append: section.id -%}
+    {%- render 'loading-overlay',
+      data_id: loader_id,
+      class: 'relative p-lg group-data-[loading]/paginator:opacity-100 opacity-0 group-data-[loading]/paginator:flex hidden group-data-[loading]/paginator:visible invisible'
+    -%}
+
+    <!-- Error message -->
+    {%- assign error_id = 'paginator-error-' | append: section.id -%}
+    {%- render 'error-message',
+      data_id: error_id,
+      class: 'group-data-[error]/paginator:opacity-100 opacity-0 group-data-[error]/paginator:block hidden group-data-[error]/paginator:visible invisible'
+    -%}
+
+    <!-- Paginator navigation -->
+    {%- assign nav_id = 'paginator-navigation-' | append: section.id -%}
+    {%- render 'cmp-paginator-nav',
+      paginate: paginate,
+      id: nav_id,
+      infinite_scroll: infinite_scroll
+    -%}
+  </cmp-paginator>
+{%- endpaginate -%}

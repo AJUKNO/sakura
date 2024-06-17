@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "blocks": {
+        "subtotal": {
+          "type": "subtotal"
+        },
+        "checkout_buttons": {
+          "type": "checkout-buttons"
+        }
+      },
+      "block_order": ["subtotal", "checkout_buttons"]
+    }
+  },
+  "order": ["main"]
+}

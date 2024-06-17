@@ -1,0 +1,35 @@
+{%- comment -%}
+  Renders product buy buttons
+
+  Accepts:
+  - block: {Object} - the block to render
+  - product: {Object} - the product to render
+  - section: {Object} - the section to render
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-buy-buttons',
+        block: block,
+        product: product,
+        section: section,
+        data_id: 'product-buy-buttons'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign attributes = block.shopify_attributes
+  assign form_id = 'product-form-' | append: section.id
+%}
+
+<div
+  data-id='{{ data_id }}'
+  {{ attributes }}
+  class='{{ class }}'
+>
+  {%- render 'cmp-product-form',
+    product: product,
+    section: section,
+    block: block,
+    form_id: form_id
+  -%}
+</div>

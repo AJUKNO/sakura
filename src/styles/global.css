@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Inter:wght@100..900&family=Noto+Serif+JP&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('nouislider/dist/nouislider.css');
+@import url('https://fonts.googleapis.com/earlyaccess/kokoro.css');
+@import url('https://fonts.googleapis.com/earlyaccess/hannari.css');
+@import url('locomotive-scroll/dist/locomotive-scroll.css');
+@import url('swiper/swiper-bundle.css');
+@import url('https://fonts.cdnfonts.com/css/satoshi');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 12px;
+}
+
+.wf-kokoro {
+  font-family: 'Kokoro';
+}
+
+body {
+  font-family: 'Satoshi', sans-serif;
+  @apply bg-background text-foreground;
+}
+
+/* h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-heading;
+} */
+
+summary {
+  &::marker {
+    content: '';
+  }
+}
+
+.toggle {
+  appearance: none;
+  display: none;
+}
+
+.toggle + label:before {
+  content: '⯈';
+  display: inline-block;
+  line-height: 0;
+}
+
+.toggle ~ .details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1s ease-in-out;
+}
+
+.toggle:checked ~ .details {
+  max-height: 100vh;
+  opacity: 1;
+}
+
+[data-animate] {
+  @apply transition-all duration-700 ease-in-out;
+}
+
+[data-animate='fade-in'] {
+  @apply opacity-0 invisible;
+}
+
+[data-animate='fade-in'][data-animate-active] {
+  @apply opacity-100 visible;
+}
+
+[data-animate='fade-up'] {
+  @apply opacity-0 translate-y-md;
+}
+
+[data-animate='fade-up'][data-animate-active] {
+  @apply opacity-100 translate-y-0;
+}
+
+.media--fill img,
+.media--fill video {
+  @apply object-contain w-full h-full;
+}
+
+.shopify-payment-button button:not([aria-disabled='true']) {
+  @apply btn btn--secondary hover:bg-secondary;
+}
+
+.shopify-payment-button button {
+  @apply btn btn--secondary hover:bg-secondary;
+}
+
+.shopify-payment-button__button--hidden {
+  @apply !hidden;
+}
+
+.shopify-policy {
+  & __container {
+    @apply p-lg;
+  }
+
+  & __title {
+    @apply text-2xl;
+  }
+}
+
+.rte {
+  @apply prose text-foreground;
+}
+
+@layer base {
+  :root {
+    --color-background: 255 255 255;
+    --color-foreground: 72 64 77;
+    --color-muted: 167 118 124;
+    --color-muted-foreground: 255 242 225;
+    --color-border: 72 64 77;
+    --color-primary: 167 118 124;
+    --color-primary-foreground: 255 250 250;
+    --color-secondary: 237 148 85;
+    --color-secondary-foreground: 72 64 77;
+    --color-accent: 255 157 157;
+    --color-accent-foreground: 72 64 77;
+    --color-destructive: 238 78 78;
+    --color-destructive-foreground: 255 250 250;
+    --color-ring: 255 0 0;
+
+    /* --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem; */
+
+    --spacing-2xs: 0.125rem;
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    --spacing-3xl: 6rem;
+    --spacing-4xl: 8rem;
+    --spacing-5xl: 10rem;
+    --spacing-6xl: 12rem;
+    --spacing-7xl: 14rem;
+
+    /* sm: '0.8rem',
+        base: '1rem',
+        xl: '1.25rem',
+        '2xl': '1.563rem',
+        '3xl': '1.953rem',
+        '4xl': '2.441rem',
+        '5xl': '3.052rem', */
+
+    --font-size-xs: 0.6rem;
+    --font-size-sm: 0.7rem;
+    --font-size-base: 0.8rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.563rem;
+    --font-size-2xl: 1.953rem;
+    --font-size-3xl: 2.441rem;
+    --font-size-4xl: 3.052rem;
+    --font-size-5xl: 3.815rem;
+    --font-size-6xl: 4.768rem;
+    --font-size-7xl: 5.96rem;
+    --font-size-8xl: 7.451rem;
+    --font-size-9xl: 9.313rem;
+    /* --font-size-xs: 0.6rem;
+        --font-size-sm: 0.7rem;
+        --font-size-base: 0.8rem;
+        --font-size-lg: 2rem;
+        --font-size-xl: 3rem;
+        --font-size-2xl: 4rem;
+        --font-size-3xl: 5rem;
+        --font-size-4xl: 6rem;
+        --font-size-5xl: 7rem;
+        --font-size-6xl: 8rem;
+        --font-size-7xl: 9rem;
+        --font-size-8xl: 10rem;
+        --font-size-9xl: 11rem; */
+
+    --font-family-sans: 'DM Sans', sans-serif;
+    --font-family-japanese: 'Kokoro', sans-serif;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /*a {*/
+  /*  @apply text-secondary underline;*/
+  /*}*/
+}
+
+/*position: absolute;*/
+/*pointer-events: none;*/
+/*transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;*/
+/*display: flex;*/
+/*align-items: center;*/
+/*justify-content: center;*/
+/*color: white;*/
+/*background-color: black;*/
+/*border-radius: 50%;*/
+/*width: 20px;*/
+/*height: 20px;*/
+
+@layer components {
+  cmp-cursor {
+    @apply fixed rounded-full z-50 pointer-events-none flex items-center justify-center transform -translate-x-[20%] -translate-y-[20%] transition-all duration-200 ease-out;
+  }
+
+  .btn {
+    @apply py-md px-lg uppercase tracking-widest text-xs border-border/10 rounded-lg hover:opacity-80 w-full hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+
+    &--primary {
+      @apply bg-primary text-primary-foreground;
+    }
+
+    &--secondary {
+      @apply bg-secondary text-secondary-foreground;
+    }
+
+    &--disabled {
+      @apply bg-accent text-accent-foreground opacity-50 cursor-not-allowed;
+    }
+  }
+
+  .dropdown {
+    @apply appearance-none hover:opacity-80 p-md w-full rounded-lg hover:ring-4 outline-none focus:ring-4 bg-white transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+  }
+
+  .quantity-selector {
+    @apply rounded-md bg-white text-foreground hover:opacity-80 flex gap-md hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+
+    &--small {
+      @apply bg-transparent text-xs text-background border-[1px] border-background/20;
+    }
+  }
+
+  /* .input {
+      @apply p-md rounded-xl bg-white hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+
+      &--outline {
+        @apply border-[1px] bg-transparent border-current;
+      }
+    } */
+  .input {
+    @apply p-md text-xs rounded-lg border-[1px] border-border/20 hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+
+    &--outline {
+      @apply border-[1px] bg-transparent border-current;
+    }
+  }
+
+  .textarea {
+    @apply p-md bg-transparent text-sm rounded-lg border-[1px] placeholder-background/50 border-background/20 hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+  }
+
+  .link {
+    /*@apply relative w-fit block after:block after:content-[''] after:absolute after:h-[1px] after:bg-on-accent/50 after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition-all after:ease-in-out after:duration-150 after:origin-left;*/
+  }
+}
+
+@layer utilities {
+  .trs-opacity {
+    @apply transition-opacity duration-300 ease-in-out;
+  }
+}

@@ -1,0 +1,111 @@
+{%- comment -%}
+  Renders a collection grid
+
+  Accepts:
+    - collection: {Object} - the collection to render
+    - paginate: {Object} - the paginate object
+    - section: {String} - the section to render
+    - infinite_scroll: {Boolean} - whether to use infinite scroll or not
+    - lazy_load: {Boolean} - whether to lazy load the images or not
+    - items_per_page: {Number} - the number of items per page
+    - show_vendor: {Boolean} - whether to show the vendor or not
+    - show_price: {Boolean} - whether to show the price or not
+    - show_secondary_image: {Boolean} - whether to show the secondary image or not
+    - show_badges: {Boolean} - whether to show the badges or not
+
+  Usage:
+    {%- render 'collection-grid',
+        collection: collection,
+        paginate: paginate,
+        section: section,
+        items_per_page: 6,
+        lazy_load: lazy_load,
+        show_vendor: true,
+        show_price: true,
+        infinite_scroll: true,
+        show_secondary_image: true,
+        show_badges: true
+    -%}
+{%- endcomment -%}
+
+{%- paginate collection.products by items_per_page -%}
+  <cmp-paginator
+    class='block group/paginator relative col-span-full'
+    data-id='paginator'
+    {% if infinite_scroll %}
+      data-enabled
+    {% endif %}
+    data-section='{{ section.id }}'
+  >
+    {% comment %}
+      // TODO: Add previous button when user refreshes collection on a paginated page
+      <button
+        id='paginator-previous-{{ section.id }}'
+        class='p-lg border-t-[1px] hover:bg-secondary hover:text-on-secondary font-hannari border-border/10 w-full'
+      >
+        前のページを読み込む
+      </button>
+    {% endcomment %}
+
+    <!-- Paginator container -->
+    <div
+      data-id='paginator-wrapper-{{ section.id }}'
+      class='group/container'
+    >
+      <div
+        data-id='paginator-container-{{ section.id }}'
+        class='grid grid-cols-12 gap-sm'
+      >
+        {%- for product in collection.products -%}
+          {% liquid
+            if forloop.index > 3
+              assign loading = 'lazy'
+            else
+              assign loading = 'eager'
+            endif
+          %}
+          <div class='col-span-4'>
+            {%- render 'card-product',
+              product: product,
+              loading: loading,
+              show_vendor: show_vendor,
+              show_price: show_price,
+              show_secondary_image: show_secondary_image,
+              show_badges: show_badges,
+              show_price: show_price,
+              show_vendor: show_vendor
+            -%}
+          </div>
+        {%- endfor -%}
+      </div>
+      <!-- Loading overlay -->
+      {%- assign loader_id = 'paginator-container-loader-' | append: section.id -%}
+      {%- render 'loading-overlay',
+        data_id: loader_id,
+        class: 'group-data-[loading]/container:opacity-100 opacity-0 group-data-[loading]/container:visible invisible'
+      -%}
+    </div>
+
+    <!-- Loading overlay -->
+    {%- assign loader_id = 'paginator-loader-' | append: section.id -%}
+    {%- render 'loading-overlay',
+      data_id: loader_id,
+      class: 'relative p-lg group-data-[loading]/paginator:opacity-100 opacity-0 group-data-[loading]/paginator:flex hidden group-data-[loading]/paginator:visible invisible'
+    -%}
+
+    <!-- Error message -->
+    {%- assign error_id = 'paginator-error-' | append: section.id -%}
+    {%- render 'error-message',
+      data_id: error_id,
+      class: 'group-data-[error]/paginator:opacity-100 opacity-0 group-data-[error]/paginator:block hidden group-data-[error]/paginator:visible invisible'
+    -%}
+
+    <!-- Paginator navigation -->
+    {%- assign nav_id = 'paginator-navigation-' | append: section.id -%}
+    {%- render 'cmp-paginator-nav',
+      paginate: paginate,
+      id: nav_id,
+      infinite_scroll: infinite_scroll
+    -%}
+  </cmp-paginator>
+{%- endpaginate -%}

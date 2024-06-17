@@ -1,0 +1,480 @@
+{%- comment -%}
+  Renders a cart item
+
+  Accepts:
+   - item: {Object} Cart item object
+   - style: {String} (optional) page | drawer
+
+  Usage:
+    {%- render 'cmp-cart-item',
+        item: item,
+        form_id: form_id,
+        style: 'page'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign regular_price_label = 'products.product.price.regular_price' | t
+  assign sale_price_label = 'products.product.price.sale_price' | t
+  assign discount_label = 'customer.order.discount' | t
+  assign unit_price_label = 'products.product.price.unit_price' | t
+  assign accessibility_seperator = 'accessibility.unit_price_separator' | t
+%}
+
+<cmp-cart-item
+  data-id='cart-item-{{ item.index | plus: 1 }}'
+  data-variant-id='{{ item.variant.id }}'
+  data-index='{{ item.index | plus: 1 }}'
+  id='cart-item-{{ item.index | plus: 1 }}'
+  class='block group/item relative'
+>
+  {%- case style -%}
+    {%- when 'page' -%}
+      <cmp-cart-remove-item-button class='group cursor-pointer relative grid grid-cols-6 gap-md'>
+        {%- comment -%} Image {%- endcomment -%}
+        <div>
+          {%- if item.image -%}
+            <a
+              href='{{ item.url }}'
+              class='aspect-w-10 group/item block aspect-h-16 relative transition-opacity duration-500 ease-in-out hover:opacity-80'
+            >
+              {%- render 'cmp-media', image: item.image, lazy_load: true -%}
+            </a>
+          {%- endif -%}
+        </div>
+        {%- comment -%} Details {%- endcomment -%}
+        <div class='space-y-2 col-span-3'>
+          {%- if settings.show_vendor -%}
+            <p>{{ item.product.vendor }}</p>
+          {%- endif -%}
+          <a
+            class='text-xs uppercase font-light tracking-widest'
+            href='{{ item.url }}'
+          >
+            {{- item.product.title | escape -}}
+          </a>
+
+          {%- comment -%} Price {%- endcomment -%}
+          {%- if item.original_price != item.final_price -%}
+            <div class='text-xs uppercase font-light tracking-widest'>
+              <span class='sr-only'>
+                {{ regular_price_label }}
+              </span>
+              <s>
+                {{ item.original_price | money }}
+              </s>
+              <span class='sr-only'>
+                {{ sale_price_label }}
+              </span>
+              <strong>
+                {{ item.final_price | money }}
+              </strong>
+            </div>
+          {%- else -%}
+            <div class='text-xs uppercase font-bold tracking-widest'>
+              {{ item.original_price | money }}
+            </div>
+          {%- endif -%}
+
+          {%- comment -%} Properties {%- endcomment -%}
+          {%- if item.product.has_only_default_variant == false
+            or item.properties.size != 0
+            or item.selling_plan_allocation != null
+          -%}
+            <dl class='text-xs uppercase font-bold tracking-widest space-y-1'>
+              {%- if item.product.has_only_default_variant == false -%}
+                {%- for option in item.options_with_values -%}
+                  <div class='flex'>
+                    <dt>{{ option.name }}:</dt>
+                    <dd class='font-light'>{{ option.value }}</dd>
+                  </div>
+                {%- endfor -%}
+              {%- endif -%}
+
+              {%- for property in item.properties -%}
+                {%- assign property_first_char = property.first | slice: 0 -%}
+                {%- if property.last != blank and property_first_char != '_' -%}
+                  <div>
+                    <dt>{{ property.first }}:</dt>
+                    <dd class='font-light'>
+                      {%- if property.last contains '/uploads/' -%}
+                        <a href='{{ property.last }}'>
+                          {{- property.last | split: '/' | last -}}
+                        </a>
+                      {%- else -%}
+                        {{ property.last }}
+                      {%- endif -%}
+                    </dd>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </dl>
+
+            <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
+          {%- endif -%}
+
+          {%- comment -%} Discounts {%- endcomment -%}
+          {%- if item.line_level_discount_allocations.size > 0 -%}
+            <ul class='text-sm' role='list' aria-label='{{ discount_label }}'>
+              {%- for discount in item.line_level_discount_allocations -%}
+                <li class='flex gap-sm items-center'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    class='w-5 h-5'
+                    fill='currentColor'
+                    viewBox='0 0 256 256'
+                  >
+                    <path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"></path>
+                  </svg>
+                  <span>
+                    {{ discount.discount_application.title }}
+                    (-{{ discount_allocation.amount | money }})
+                  </span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+        {%- comment -%} Quantity {%- endcomment -%}
+        <div class='text-xs uppercase font-light tracking-widest'>
+          {%- liquid
+            assign has_qty_rules = false
+            if item.variant.quantity_rule.increment > 1 or item.variant.quantity_rule.min > 1 or item.variant.quantity_rule.max != null
+              assign has_qty_rules = true
+            endif
+
+            assign has_vol_pricing = false
+            if item.variant.quantity_price_breaks.size > 0
+              assign has_vol_pricing = true
+            endif
+          -%}
+          {%- comment -%}
+            TODO: Add quantity rules and volume pricing
+          {%- endcomment -%}
+          {{ item.quantity }}
+        </div>
+        {%- comment -%} Total {%- endcomment -%}
+        <span class='text-xs uppercase font-light tracking-widest'>
+          {%- if item.original_line_price != item.final_line_price -%}
+            <dl>
+              <dt class='sr-only'>{{ regular_price_label }}</dt>
+              <dd>
+                <s>
+                  {{ item.original_line_price | money }}
+                </s>
+              </dd>
+              <dt class='sr-only'>
+                {{ sale_price_label }}
+              </dt>
+              <dd>
+                {{ item.final_line_price | money }}
+              </dd>
+            </dl>
+          {%- else -%}
+            <span>
+              {{ item.original_line_price | money }}
+            </span>
+          {%- endif -%}
+
+          {%- comment -%} Unit prices {%- endcomment -%}
+          {%- if item.variant.available and item.unit_price_measurement -%}
+            <div>
+              <span class='sr-only'>{{ unit_price_label }}</span>
+              {{ item.unit_price | money }}
+              <span aria-hidden='true'>/</span>
+              <span>&nbsp;{{ accessibility_seperator }}&nbsp;</span>
+              {%- if item.unit_price_measurement.reference_value != 1 -%}
+                {{ item.unit_price_measurement.reference_value }}
+              {%- endif -%}
+              {{ item.unit_price_measurement.reference_unit }}
+            </div>
+          {%- endif -%}
+        </span>
+        <div class='absolute group-hover:visible group-hover:opacity-100 opacity-0 invisible trs-opacity flex items-center justify-center inset-0 bg-primary/50'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-6 w-6 fill-error'
+            viewBox='0 0 256 256'
+          >
+            <path d="M216,48H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM192,208H64V64H192ZM80,24a8,8,0,0,1,8-8h80a8,8,0,0,1,0,16H88A8,8,0,0,1,80,24Z"></path>
+          </svg>
+        </div>
+      </cmp-cart-remove-item-button>
+    {%- when 'ass' -%}
+      <div class='space-y-3'>
+        {%- if item.image -%}
+          <cmp-cart-remove-item-button class='cursor-pointer'>
+            <div
+              class='aspect-w-10 group/item block aspect-h-16 relative transition-opacity duration-500 ease-in-out hover:opacity-80'
+            >
+              {%- render 'cmp-media', image: item.image, lazy_load: true -%}
+            </div>
+          </cmp-cart-remove-item-button>
+        {%- endif -%}
+
+        <div class='flex gap-6'>
+          <div class='flex-grow space-y-3'>
+            {%- if settings.show_vendor -%}
+              <p>{{ item.product.vendor }}</p>
+            {%- endif -%}
+            <a
+              class='text-xs uppercase font-light tracking-widest'
+              href='{{ item.url }}'
+            >
+              {{- item.product.title | escape -}}
+            </a>
+
+            {%- comment -%} Properties {%- endcomment -%}
+            {%- if item.product.has_only_default_variant == false
+              or item.properties.size != 0
+              or item.selling_plan_allocation != null
+            -%}
+              <dl class='text-xs uppercase font-bold tracking-widest space-y-1'>
+                <div class='flex gap-2'>
+                  {%- if item.product.has_only_default_variant == false -%}
+                    {%- for option in item.options_with_values -%}
+                      <div class='flex gap-2 items-center'>
+                        <dt class='sr-only'>{{ option.name }}:</dt>
+                        <dd class='font-light'>{{ option.value }}</dd>
+                      </div>
+                      {%- unless forloop.last -%}
+                        <div class='font-light'>/</div>
+                      {%- endunless -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+
+                {%- for property in item.properties -%}
+                  {%- assign property_first_char = property.first | slice: 0 -%}
+                  {%- if property.last != blank and property_first_char != '_' -%}
+                    <div>
+                      <dt>{{ property.first }}:</dt>
+                      <dd class='font-light'>
+                        {%- if property.last contains '/uploads/' -%}
+                          <a href='{{ property.last }}'>
+                            {{- property.last | split: '/' | last -}}
+                          </a>
+                        {%- else -%}
+                          {{ property.last }}
+                        {%- endif -%}
+                      </dd>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </dl>
+
+              <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
+            {%- endif -%}
+
+            {%- comment -%} Discounts {%- endcomment -%}
+            <ul role='list' aria-label='{{ discount_label }}'>
+              {%- for discount in item.line_level_discount_allocations -%}
+                <li>
+                  {{ discount.discount_application.title }}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+
+          <div>
+            <span class='text-xs uppercase font-bold tracking-widest'>
+              {%- if item.original_line_price != item.final_line_price -%}
+                <dl>
+                  <dt class='sr-only'>{{ regular_price_label }}</dt>
+                  <dd>
+                    <s>
+                      {{ item.original_line_price | money }}
+                    </s>
+                  </dd>
+                  <dt class='sr-only'>
+                    {{ sale_price_label }}
+                  </dt>
+                  <dd>
+                    {{ item.final_line_price | money }}
+                  </dd>
+                </dl>
+              {%- else -%}
+                <span>
+                  {{ item.original_line_price | money }}
+                </span>
+              {%- endif -%}
+
+              {%- comment -%} Unit prices {%- endcomment -%}
+              {%- if item.variant.available and item.unit_price_measurement -%}
+                <div>
+                  <span class='sr-only'>{{ unit_price_label }}</span>
+                  {{ item.unit_price | money }}
+                  <span aria-hidden='true'>/</span>
+                  <span>&nbsp;{{ accessibility_seperator }}&nbsp;</span>
+                  {%- if item.unit_price_measurement.reference_value != 1 -%}
+                    {{ item.unit_price_measurement.reference_value }}
+                  {%- endif -%}
+                  {{ item.unit_price_measurement.reference_unit }}
+                </div>
+              {%- endif -%}
+            </span>
+          </div>
+        </div>
+
+        {%- render 'cmp-quantity-selector',
+          product: item.variant.product,
+          section: section,
+          form_id: form_id
+        -%}
+      </div>
+    {%- when 'drawer' -%}
+      <div class='grid gap-lg grid-cols-[25%,1fr_auto] border-[1px] border-background/20 rounded-md overflow-hidden'>
+        <div class='shrink-0'>
+          {%- if item.image -%}
+            <a
+              href='{{ item.url }}'
+              class='aspect-w-12 group/item block aspect-h-16 relative transition-opacity duration-500 ease-in-out'
+            >
+              {%- render 'cmp-media',
+                media: item.image,
+                lazy_load: true,
+                animation: 'fade-in',
+                class: 'media--fill',
+                type: 'image'
+              -%}
+            </a>
+          {%- endif -%}
+        </div>
+        <div class=' py-md flex flex-col justify-between gap-md'>
+          <div class='space-y-sm'>
+            {%- if settings.show_vendor -%}
+              <p class='text-xs'>{{ item.product.vendor }}</p>
+            {%- endif -%}
+            <a
+              class='uppercase no-underline font-black'
+              href='{{ item.url }}'
+            >
+              {{- item.product.title | escape -}}
+            </a>
+
+            {%- comment -%} Properties {%- endcomment -%}
+            {%- if item.product.has_only_default_variant == false
+              or item.properties.size != 0
+              or item.selling_plan_allocation != null
+            -%}
+              <dl class='text-sm uppercase space-y-1'>
+                <div class='flex gap-2'>
+                  {%- if item.product.has_only_default_variant == false -%}
+                    {%- for option in item.options_with_values -%}
+                      <div class='flex gap-2 items-center'>
+                        <dt class='sr-only'>{{ option.name }}:</dt>
+                        <dd>{{ option.value }}</dd>
+                      </div>
+                      {%- unless forloop.last -%}
+                        <div>/</div>
+                      {%- endunless -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                </div>
+
+                {%- for property in item.properties -%}
+                  {%- assign property_first_char = property.first | slice: 0 -%}
+                  {%- if property.last != blank and property_first_char != '_' -%}
+                    <div>
+                      <dt>{{ property.first }}:</dt>
+                      <dd>
+                        {%- if property.last contains '/uploads/' -%}
+                          <a href='{{ property.last }}'>
+                            {{- property.last | split: '/' | last -}}
+                          </a>
+                        {%- else -%}
+                          {{ property.last }}
+                        {%- endif -%}
+                      </dd>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </dl>
+
+              {%- comment -%} <p>{{ item.selling_plan_allocation.selling_plan.name }}</p> {%- endcomment -%}
+            {%- endif -%}
+
+            {%- comment -%} Discounts {%- endcomment -%}
+            {%- if item.line_level_discount_allocations.size > 0 -%}
+              <ul class='text-sm' role='list' aria-label='{{ discount_label }}'>
+                {%- for discount in item.line_level_discount_allocations -%}
+                  <li class='flex gap-sm items-center'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      class='w-5 h-5'
+                      fill='currentColor'
+                      viewBox='0 0 256 256'
+                    >
+                      <path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"></path>
+                    </svg>
+                    <span>
+                      {{ discount.discount_application.title }}
+                      (-{{ discount.amount | money }})
+                    </span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+
+          {%- render 'cmp-quantity-selector',
+            product: item.variant.product,
+            section: section,
+            form_id: form_id,
+            value: item.quantity,
+            class: 'w-fit quantity-selector--small',
+            item: item
+          -%}
+        </div>
+        <div class='py-md pr-lg flex justify-between flex-col gap-md'>
+          <span class='block font-black'>
+            {%- if item.original_line_price != item.final_line_price -%}
+              <dl>
+                <dt class='sr-only'>{{ regular_price_label }}</dt>
+                <dd>
+                  <s>
+                    {{ item.original_line_price | money }}
+                  </s>
+                </dd>
+                <dt class='sr-only'>
+                  {{ sale_price_label }}
+                </dt>
+                <dd>
+                  {{ item.final_line_price | money }}
+                </dd>
+              </dl>
+            {%- else -%}
+              <span>
+                {{ item.original_line_price | money }}
+              </span>
+            {%- endif -%}
+
+            {%- comment -%} Unit prices {%- endcomment -%}
+            {%- if item.variant.available and item.unit_price_measurement -%}
+              <div>
+                <span class='sr-only'>{{ unit_price_label }}</span>
+                {{ item.unit_price | money }}
+                <span aria-hidden='true'>/</span>
+                <span>&nbsp;{{ accessibility_seperator }}&nbsp;</span>
+                {%- if item.unit_price_measurement.reference_value != 1 -%}
+                  {{ item.unit_price_measurement.reference_value }}
+                {%- endif -%}
+                {{ item.unit_price_measurement.reference_unit }}
+              </div>
+            {%- endif -%}
+          </span>
+
+          <cmp-cart-remove-item-button>
+            <button class='underline'>Remove</button>
+          </cmp-cart-remove-item-button>
+        </div>
+      </div>
+  {%- endcase -%}
+
+  <!-- Loading overlay -->
+  {%- assign loader_id = 'cart-item-loader-' | append: item.index | plus: 1 -%}
+  {%- render 'loading-overlay',
+    data_id: loader_id,
+    class: 'group-data-[loading]/item:opacity-100 opacity-0 group-data-[loading]/item:visible invisible'
+  -%}
+</cmp-cart-item>

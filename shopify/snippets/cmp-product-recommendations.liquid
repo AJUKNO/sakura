@@ -1,0 +1,46 @@
+{%- comment -%}
+  Renders a product recommendations section
+
+  Accepts:
+    - product: {Object} - the product to render
+    - section: {Object} - the section to render
+    - intent: {String} - the intent of the recommendations
+    - block: {Object} - the block to render
+    - class: {String} (optional) Additional classes
+
+  Usage:
+    {%- render 'cmp-product-recommendations',
+        intent: 'complementary',
+        product: product,
+        section: section,
+        block: block,
+        class: 'my-class'
+    -%}
+{%- endcomment -%}
+
+<cmp-product-recommendations
+  class='min-h-[1px] space-y-sm block {{ class }}'
+  data-url='{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ block.settings.product_limit  }}&intent={{ intent }}'
+  data-id='product-recommendations'
+>
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    {%- if recommendations.intent == 'related' -%}
+      <h2>{{ 'products.product.related' | t }}</h2>
+    {%- else -%}
+      <h2>{{ 'products.product.complementary' | t }}</h2>
+    {%- endif -%}
+
+    <ul class='grid grid-cols-3 gap-md'>
+      {%- for product in recommendations.products -%}
+        <li class='aspect-h-16 aspect-w-12'>
+          {% render 'cmp-media',
+            media: product.featured_media,
+            lazy_load: true,
+            class: 'media--fill',
+            animation: 'fade-in'
+          %}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</cmp-product-recommendations>

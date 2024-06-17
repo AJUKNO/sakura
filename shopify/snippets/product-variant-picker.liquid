@@ -1,0 +1,192 @@
+{%- comment -%}
+  Renders a product variant picker.
+
+  Accepts:
+  - block: {Object} - the block to render
+  - product: {Object} - the product to render
+  - section: {Object} - the section to render
+  - update_url: {Boolean} - whether to update the URL when the variant changes
+  - data_id: {String} - the data-id attribute
+
+  Usage:
+    {%- render 'product-variant-picker',
+        block: block,
+        product: product,
+        section: section,
+        update_url: true
+        data_id: 'product-variant-picker'
+    -%}
+{%- endcomment -%}
+
+{%- liquid
+  assign attributes = block.shopify_attributes
+  assign section_id = section.id
+  assign picker_type = block.settings.variant_picker_type
+  assign options_with_values = product.options_with_values
+  assign product_form_id = 'product-form-' | append: section_id
+
+  assign variants_available_arr = product.variants | map: 'available'
+  assign variants_option1_arr = product.variants | map: 'option1'
+  assign variants_option2_arr = product.variants | map: 'option2'
+  assign variants_option3_arr = product.variants | map: 'option3'
+
+  assign product_variants = 'products.product.product_variants' | t
+%}
+
+<div
+  data-id='{{ data_id }}'
+  {{ attributes }}
+  class='{{ class }}'
+>
+  {%- unless product.has_only_default_variant -%}
+    <cmp-variant-picker
+      data-url='{{ product.url }}'
+      data-id='variant-picker'
+      data-section='{{ section.id }}'
+      {% if update_url == true %}
+        data-update-url
+      {% endif %}
+      class='space-y-2 group/variant-picker relative'
+    >
+      <div class='space-y-sm'>
+        {%- for option in options_with_values -%}
+          {%- comment -%}
+            TODO: Swatch picker
+            TODO: Button picker
+          {%- endcomment -%}
+
+          <div data-id='variant-picker-input' class='flex flex-col gap-2'>
+            <label
+              for='variant-picker-option-{{ section_id }}-{{ forloop.index0 }}'
+              class='tracking-widest uppercase font-bold text-sm'
+            >
+              {{ option.name }}
+            </label>
+            <div class='relative'>
+              <select
+                name='options[{{ option.name | escape }}]'
+                id='variant-picker-option-{{ section_id }}-{{ forloop.index0 }}'
+                form='{{ product_form_id }}'
+                class='dropdown'
+              >
+                <!-- Variant option values -->
+                {%- for value in option.values -%}
+                  {%- liquid
+                    assign option_disabled = true
+
+                    for option1_name in variants_option1_arr
+                      case option.position
+                        when 1
+                          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 2
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                        when 3
+                          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                            assign option_disabled = false
+                          endif
+                      endcase
+                    endfor
+                    assign value_unavailable = 'products.product.value_unavailable' | t: option_value: value
+                  -%}
+
+                  <option
+                    value='{{ value | escape }}'
+                    {%- if option.selected_value == value -%}
+                      selected='selected'
+                    {%- endif -%}
+                  >
+                    {%- if option_disabled -%}
+                      {{ value_unavailable }}
+                    {%- else -%}
+                      {{ value }}
+                    {%- endif -%}
+                  </option>
+                {%- endfor -%}
+              </select>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                class='h-4 w-auto absolute right-4 top-1/2 transform -translate-y-1/2'
+                viewBox='0 0 256 256'
+              >
+                <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+              </svg>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <!-- Loading overlay -->
+      {%- assign loader_id = 'variant-picker-loading-' | append: section.id -%}
+      {%- render 'loading-overlay',
+        data_id: loader_id,
+        class: 'group-data-[loading]/variant-picker:opacity-100 opacity-0 group-data-[loading]/variant-picker:visible invisible'
+      -%}
+
+      <!-- Error message -->
+      {%- assign error_id = 'variant-picker-error-' | append: section.id -%}
+      {%- render 'error-message',
+        data_id: error_id,
+        class: 'group-data-[error]/variant-picker:opacity-100 opacity-0 group-data-[error]/variant-picker:block hidden group-data-[error]/variant-picker:visible invisible'
+      -%}
+
+      <!-- Product variants JSON -->
+      <script type='application/json'>
+        {{ product.variants | json }}
+      </script>
+    </cmp-variant-picker>
+  {%- endunless -%}
+
+  <!-- Fallback for browsers with JavaScript disabled -->
+  <noscript>
+    <div>
+      <label>
+        {{ product_variants }}
+      </label>
+      <select
+        name='id'
+        id='variants-{{ section_id }}'
+        form='{{ product_form_id }}'
+      >
+        {%- for variant in product.variants -%}
+          <option
+            {%- if variant == product.selected_or_first_available_variant -%}
+              selected='selected'
+            {%- endif -%}
+            {%- if variant.available == false -%}
+              disabled
+            {%- endif -%}
+            value='{{ variant.id }}'
+          >
+            {%- liquid
+              echo variant.title
+              echo variant.price | money | strip_html | prepend: ' - '
+              if variant.available == false
+                echo 'products.product.sold_out' | t | prepend: ' - '
+              endif
+              if variant.quantity_rule.increment > 1
+                echo 'products.product.quantity.multiples_of' | t: quantity: variant.quantity_rule.increment | prepend: ' - '
+              endif
+              if variant.quantity_rule.min > 1
+                echo 'products.product.quantity.minimum_of' | t: quantity: variant.quantity_rule.min | prepend: ' - '
+              endif
+              if variant.quantity_rule.max != null
+                echo 'products.product.quantity.maximum_of' | t: quantity: variant.quantity_rule.max | prepend: ' - '
+              endif
+              # TODO: enable theme-check once `item_count_for_variant` is accepted as valid filter
+              # theme-check-disable
+              assign cart_quantity = cart | item_count_for_variant: variant.id
+              # theme-check-enable
+              if cart_quantity > 0
+                echo 'products.product.quantity.in_cart_html' | t: quantity: cart_quantity | prepend: ' - '
+              endif
+            -%}
+          </option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </noscript>
+</div>
