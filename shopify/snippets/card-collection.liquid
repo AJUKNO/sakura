@@ -1,0 +1,35 @@
+{% if collection and collection != empty %}
+  {% liquid
+    assign media = collection.featured_image
+    assign url = collection.url
+    assign title = collection.title | escape
+  %}
+  <div class='{{ class }}'>
+    <a
+      href='{{ url }}'
+      class='aspect-w-6 group/item block aspect-h-2 relative transition-opacity duration-500 ease-in-out'
+    >
+      {%- if media -%}
+        <div
+          data-animate='fade-in'
+          data-animate-repeat
+        >
+          {%- render 'cmp-media',
+            media: media,
+            loading: loading,
+            type: 'image',
+            class: 'media--fill'
+          -%}
+        </div>
+      {% endif %}
+    </a>
+
+    <div class='py-4 space-y-3'>
+      <h3 class='font-black uppercase trs-opacity hover:opacity-60'>
+        <a href='{{ url }}'>
+          {{ title }}
+        </a>
+      </h3>
+    </div>
+  </div>
+{% endif %}

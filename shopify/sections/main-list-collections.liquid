@@ -1,0 +1,94 @@
+<section
+  class='grid grid-cols-12 gap-lg gap-y-lg px-lg'
+>
+  {%- paginate collections by section.settings.items_per_page -%}
+    <cmp-paginator
+      class='block group/paginator relative col-span-full'
+      data-id='paginator'
+      {% if section.settings.infinite_scroll %}
+        data-enabled
+      {% endif %}
+      data-section='{{ section.id }}'
+    >
+      {% comment %} Paginator container {% endcomment %}
+      <div
+        data-id='paginator-wrapper-{{ section.id }}'
+        class='group/container'
+      >
+        <div
+          data-id='paginator-container-{{ section.id }}'
+          class='grid grid-cols-12 gap-lg'
+        >
+          {%- for collection in collections -%}
+            {% liquid
+              if forloop.index > 3
+                assign loading = 'lazy'
+              else
+                assign loading = 'eager'
+              endif
+            %}
+            <div class='col-span-12'>
+              {%- render 'card-collection',
+                collection: collection,
+                loading: loading
+              -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        <!-- Loading overlay -->
+        {%- assign loader_id = 'paginator-container-loader-' | append: section.id -%}
+        {%- render 'loading-overlay',
+          data_id: loader_id,
+          class: 'group-data-[loading]/container:opacity-100 opacity-0 group-data-[loading]/container:visible invisible'
+        -%}
+      </div>
+
+      {% comment %} Loading overlay {% endcomment %}
+      {%- assign loader_id = 'paginator-loader-' | append: section.id -%}
+      {%- render 'loading-overlay',
+        data_id: loader_id,
+        class: 'relative p-lg group-data-[loading]/paginator:opacity-100 opacity-0 group-data-[loading]/paginator:flex hidden group-data-[loading]/paginator:visible invisible'
+      -%}
+
+      {% comment %} Error message {% endcomment %}
+      {%- assign error_id = 'paginator-error-' | append: section.id -%}
+      {%- render 'error-message',
+        data_id: error_id,
+        class: 'group-data-[error]/paginator:opacity-100 opacity-0 group-data-[error]/paginator:block hidden group-data-[error]/paginator:visible invisible'
+      -%}
+
+      {% comment %} Paginator navigation {% endcomment %}
+      {%- assign nav_id = 'paginator-navigation-' | append: section.id -%}
+      {%- render 'cmp-paginator-nav',
+        paginate: paginate,
+        id: nav_id,
+        infinite_scroll: section.settings.infinite_scroll
+      -%}
+    </cmp-paginator>
+  {%- endpaginate -%}
+</section>
+
+{%- schema -%}
+{
+  "name": "t:sections.main-list-collections.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "infinite_scroll",
+      "label": "t:sections.general.infinite_scroll.label",
+      "default": true,
+      "info": "t:sections.general.infinite_scroll.info"
+    },
+    {
+      "type": "range",
+      "id": "items_per_page",
+      "label": "t:sections.general.items_per_page.label",
+      "default": 3,
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "info": "t:sections.general.items_per_page.info"
+    }
+  ]
+}
+{%- endschema -%}
