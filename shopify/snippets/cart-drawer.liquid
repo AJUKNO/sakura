@@ -12,28 +12,30 @@
   assign login_title = 'sections.cart.login.title' | t
   assign login_paragraph = 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url
   assign form_id = 'cart-drawer-form'
+  assign component_id = 'cart-drawer'
 %}
 
 <cmp-cart-drawer
-  data-id='cart-drawer'
-  class='group/parent'
+  data-id='{{ component_id }}'
+  class='group/parent fixed z-40'
 >
   <div
-    data-id='cart-drawer-overlay'
-    class='bg-foreground/60 transition-all duration-[600ms] ease-in-out group-data-[open]/parent:visible invisible group-data-[open]/parent:opacity-100 opacity-0 group-data-[open]/parent:pointer-events-auto pointer-events-none fixed inset-0 z-30'
+    data-id='{{  component_id | append: '-overlay' }}'
+    class='bg-background/20 backdrop-blur-sm transition-all duration-[600ms] ease-in-out group-data-[open]/parent:visible invisible group-data-[open]/parent:opacity-100 opacity-0 group-data-[open]/parent:pointer-events-auto pointer-events-none fixed inset-0 z-30'
   ></div>
 
   {% comment %} Cart Drawer {% endcomment %}
   <cmp-cart
-    data-id='cart-drawer-menu'
-    class='bottom-0 w-[36rem] backdrop-blur-lg fixed z-40 right-0 top-0 group-data-[open]/parent:translate-x-0 transition-all duration-[600ms] ease-in-out translate-x-full group/menu bg-foreground/80 text-background overflow-y-auto'
+    tabindex='0'
+    data-id='{{  component_id | append: '-menu' }}'
+    class='bottom-0 w-[36rem] border-l-[1px] border-border/20 fixed z-40 right-0 top-0 group-data-[open]/parent:translate-x-0 transition-all duration-[600ms] ease-in-out translate-x-full group/menu bg-background text-foreground overflow-y-auto'
   >
     {% comment %} Header {% endcomment %}
     <div
-      class=' h-20 sticky z-10 top-0 p-md py-md flex justify-between items-center'
+      class=' h-20 bg-background border-b-[1px] border-border/20 sticky z-10 top-0 p-md py-md flex justify-between items-center'
     >
       <h3
-        data-id='cart-drawer-title'
+        data-id='{{ component_id | append: '-title' }}'
         class=' font-black flex items-center gap-sm uppercase'
       >
         <span>Cart</span>
@@ -43,7 +45,7 @@
       </h3>
       <button
         aria-label='{{ accessibility_close }}'
-        data-id='cart-drawer-close-button'
+        data-id='{{ component_id | append: '-close-button' }}'
         class='hover:rotate-90 hover:opacity-50 transition-all duration-[400ms] ease-in-out'
       >
         <svg
@@ -58,7 +60,10 @@
     </div>
 
     <!-- Items -->
-    <div data-id='cart-drawer-items' class='p-md'>
+    <div
+      data-id='{{ component_id | append: '-items'}}'
+      class='p-md'
+    >
       {%- if cart == empty -%}
         <div>
           <h2 class='text-xl'>{{ cart_empty }}</h2>
@@ -95,8 +100,8 @@
 
     <!-- Footer -->
     <div
-      data-id='cart-drawer-footer'
-      class='border-t-[1px] backdrop-blur-lg bg-foreground/90 flex-col border-border/10 p-md flex sticky bottom-0 space-y-md'
+      data-id='{{ component_id | append: '-footer'}}'
+      class='border-t-[1px] bg-background flex-col border-border/20 p-md flex sticky bottom-0 space-y-md'
     >
       {%- if cart != empty -%}
         {%- if settings.show_cart_note -%}

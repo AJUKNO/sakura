@@ -16,6 +16,11 @@
     -%}
 {%- endcomment -%}
 
+{%- liquid
+  assign accessibility_close = 'accessibility.close' | t
+  assign component_id = 'filter-drawer'
+%}
+
 <cmp-filter
   {% if enable_sorting %}
     data-sorting
@@ -23,30 +28,43 @@
   {% if enable_filtering %}
     data-filtering
   {% endif %}
-  data-id='filter'
+  data-id='{{ component_id }}'
   data-section='{{ section.id }}'
-  class=' bg-stone-300/50 fixed inset-0 z-20 group/filter data-[open]:opacity-100 opacity-0 data-[open]:visible invisible transition-all duration-300 ease-in-out'
+  class='group/parent fixed z-40'
 >
+  <div
+    data-id='{{ component_id }}-overlay'
+    class='bg-background/20 backdrop-blur-sm transition-all duration-[600ms] ease-in-out group-data-[open]/parent:visible invisible group-data-[open]/parent:opacity-100 opacity-0 group-data-[open]/parent:pointer-events-auto pointer-events-none fixed inset-0 z-30'
+  ></div>
+
+  {% comment %} Filter Drawer {% endcomment %}
   <form
-    id='filter-drawer-{{ section.id }}'
-    data-id='filter-drawer-{{ section.id }}'
-    class='w-96 bg-stone-100 relative overflow-y-scroll text-stone-950 h-full'
+    id='{{ component_id }}-menu'
+    data-id='{{ component_id }}-menu'
+    class='bottom-0 w-[36rem] border-l-[1px] border-border/20 fixed z-40 right-0 top-0 group-data-[open]/parent:translate-x-0 transition-all duration-[600ms] ease-in-out translate-x-full group/menu bg-background text-foreground overflow-y-auto'
   >
-    <div class='border-b-[1px] px-6 py-5 border-stone-950/20 flex justify-between items-center'>
-      <h3 class='text-xl opacity-60 font-light'>
-        {{ result_size }}
-
-        result(s)
+    <div
+      class='h-20 bg-background border-b-[1px] border-border/20 sticky z-10 top-0 p-md py-md flex justify-between items-center'
+    >
+      <h3
+        data-id='{{ component_id | append: '-title' }}'
+        class=' font-black flex items-center gap-sm uppercase'
+      >
+        <span>Result(s)</span>
+        <sup class='text-xs'>{{ result_size }}</sup>
       </h3>
-
-      <!-- Close button -->
-      <button data-id='filter-close-{{ section.id }}'>
+      <button
+        aria-label='{{ accessibility_close }}'
+        data-id='{{ component_id | append: '-close-button' }}'
+        class='hover:rotate-90 hover:opacity-50 transition-all duration-[400ms] ease-in-out'
+      >
         <svg
+          class='w-auto h-6'
+          viewBox='0 0 152 168'
+          fill='none'
           xmlns='http://www.w3.org/2000/svg'
-          class='w-5 h-5'
-          viewBox='0 0 256 256'
         >
-          <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M97.1014 47.0755C140.786 -3.51857 183.417 71.3187 118.154 83.4401C183.417 96.0887 140.26 170.399 97.1014 119.804C119.207 183.047 33.4167 182.52 55.5222 119.804C11.8376 170.399 -30.7942 96.0887 34.4693 83.4401C-31.3205 71.3187 11.8376 -2.99156 55.5222 47.0755C32.8904 -15.6401 119.207 -15.6401 97.1014 47.0755ZM76.0483 73.9537C81.3119 73.9537 86.0485 78.17 86.0485 83.4401C86.0485 88.7102 81.3119 93.4537 76.0483 93.4537C70.7853 93.4537 66.5744 88.7102 66.5744 83.4401C66.5744 78.17 70.7853 73.9537 76.0483 73.9537Z" fill="currentColor"/>
         </svg>
       </button>
     </div>
@@ -192,31 +210,17 @@
     </div>
 
     <!-- Loading overlay -->
-    {%- assign loader_id = 'filter-loading-' | append: section.id -%}
+    {%- assign loader_id = '-loading' | prepend: component_id -%}
     {%- render 'loading-overlay',
       data_id: loader_id,
       class: 'group-data-[loading]/filter:opacity-100 opacity-0 group-data-[loading]/filter:visible invisible'
     -%}
 
     <!-- Error message -->
-    {%- assign error_id = 'filter-error-' | append: section.id -%}
+    {%- assign error_id = 'filter-error' | prepend: component.id -%}
     {%- render 'error-message',
       data_id: error_id,
       class: 'mx-lg group-data-[error]/filter:opacity-100 opacity-0 group-data-[error]/filter:block hidden group-data-[error]/filter:visible invisible'
     -%}
   </form>
 </cmp-filter>
-
-<!-- Open button -->
-<button
-  data-id='filter-open-{{ section.id }}'
-  class='fixed left-6 md:left-12 bottom-6 md:bottom-12 drop-shadow-md bg-stone-950 z-10 fill-stone-300 px-8 rounded-md py-3'
->
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    class='w-5 h-5'
-    viewBox='0 0 256 256'
-  >
-    <path d="M64,105V40a8,8,0,0,0-16,0v65a32,32,0,0,0,0,62v49a8,8,0,0,0,16,0V167a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,56,152Zm80-95V40a8,8,0,0,0-16,0V57a32,32,0,0,0,0,62v97a8,8,0,0,0,16,0V119a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,128,104Zm104,64a32.06,32.06,0,0,0-24-31V40a8,8,0,0,0-16,0v97a32,32,0,0,0,0,62v17a8,8,0,0,0,16,0V199A32.06,32.06,0,0,0,232,168Zm-32,16a16,16,0,1,1,16-16A16,16,0,0,1,200,184Z"></path>
-  </svg>
-</button>
