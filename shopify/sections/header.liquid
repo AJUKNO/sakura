@@ -1,0 +1,92 @@
+<header
+  data-animate='fade-in'
+  data-animate-repeat
+  class='transition-all gap-lg duration-300 ease-in-out fixed top-0 z-20 grid grid-cols-12  w-full px-lg h-20'
+>
+  <div class='flex gap-sm col-span-4 items-center'>
+    {% if settings.logo != null %}
+      <a
+        data-cursor-flower
+        href='{{ shop.url }}'
+        class='flex items-center gap-sm'
+      >
+        <img
+          style='width: {{ settings.logo_width }}px;'
+          src='{{ settings.logo | img_url: '300x' }}'
+          alt='{{ shop.name }}'
+        >
+      </a>
+    {% else %}
+      <h1 class='text-3xl font-bold'>{{ shop.name }}</h1>
+    {% endif %}
+  </div>
+  <ul class='col-span-4 font-black uppercase start-5 flex gap-lg items-center'>
+    {% for link in section.settings.menu.links %}
+      <li class='group/link relative'>
+        <details>
+          <summary>
+            <span href='{{ link.url }}'>{{ link.title }}</span>
+          </summary>
+          <div>
+            {% if link.links.size > 0 %}
+              <ul class='absolute group-hover/link:opacity-100 group-hover/link:visible invisible opacity-0 inset-x-0 top-0 pt-20 px-lg grid grid-cols-12 gap-lg bg-background w-full'>
+                {% for child_link in link.links %}
+                  <li class='menu-link'>
+                    <a href='{{ child_link.url }}'>{{ child_link.title }}</a>
+
+                    {% if child_link.links.size > 0 %}
+                      <ul class='menu dropdown-grandchild'>
+                        {% for grandchild_link in child_link.links %}
+                          <li class='menu-link'>
+                            <a href='{{ grandchild_link.url }}'>
+                              {{- grandchild_link.title -}}
+                            </a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </details>
+      </li>
+    {% endfor %}
+
+    {% comment %}<a class='no-underline' href='/blogs/news'>Blog</a>{% endcomment %}
+    {% comment %}<a class='no-underline' href='/collections/all'>Latest</a>{% endcomment %}
+    {% comment %}<a class='no-underline' href='/collections/archive'>Archive</a>{% endcomment %}
+  </ul>
+  <div class='col-start-9 col-span-4 font-black flex items-center gap-lg'>
+    {% comment %}<a class='no-underline' href='/search'>PredictiveSearch</a>{% endcomment %}
+    {% render 'search-drawer', class: 'uppercase' %}
+    {% comment %} <a class='no-underline' href='/cart'>Cart</a> {% endcomment %}
+    <button
+      type='button'
+      aria-label='Open Cart'
+      data-id='cart-drawer-open-button'
+      class='flex items-center gap-sm uppercase'
+    >
+      <span>Cart</span>
+      {%- if cart != empty -%}
+        <sup class='text-xs'>{{ cart.item_count }}</sup>
+      {%- endif -%}
+    </button>
+  </div>
+</header>
+
+{%- schema -%}
+{
+  "name": "t:sections.header.name",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "info": "t:sections.header.settings.menu.info",
+      "label": "t:sections.header.settings.menu.label"
+    }
+  ]
+}
+{%- endschema -%}
