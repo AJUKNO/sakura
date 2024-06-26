@@ -27,19 +27,39 @@
     {%- if recommendations.intent == 'related' -%}
       <h2>{{ 'products.product.related' | t }}</h2>
     {%- else -%}
-      <h2>{{ 'products.product.complementary' | t }}</h2>
+      <h2 class='font-black uppercase text-sm'>
+        {{ 'products.product.complementary' | t }}
+      </h2>
     {%- endif -%}
 
-    <ul class='grid grid-cols-3 gap-md'>
+    <ul class='flex gap-sm flex-col'>
       {%- for product in recommendations.products -%}
-        <li class='aspect-h-16 aspect-w-12'>
-          {% render 'cmp-media',
-            media: product.featured_media,
-            lazy_load: true,
-            class: 'media--fill',
-            animation: 'fade-in'
-          %}
-        </li>
+        <a
+          href='{{ product.url }}'
+          class='grid gap-lg grid-cols-[25%,1fr_auto] border-[1px] border-border/10 rounded-md overflow-hidden'
+          data-animate='fade-in'
+          data-animate-repeat
+        >
+          <div class='aspect-h-3 aspect-w-3'>
+            {% render 'cmp-media',
+              media: product.featured_media,
+              class: 'media--fill'
+            %}
+          </div>
+
+          <h3 class='py-md'>{{ product.title }}</h3>
+          <div class='space-y-sm py-md pr-lg'>
+            {%- assign price_id = 'product-info-price-' | append: section.id -%}
+            {%- render 'product-price',
+              block: block,
+              product: product,
+              section: section,
+              data_id: price_id,
+              hide_tax: true,
+              class: 'col-span-full text-sm'
+            -%}
+          </div>
+        </a>
       {%- endfor -%}
     </ul>
   {%- endif -%}
