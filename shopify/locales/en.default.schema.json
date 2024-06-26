@@ -283,6 +283,25 @@
         "info": "Toggle to display or hide tags on blog posts."
       }
     },
+    "header": {
+      "name": "Header",
+      "settings": {
+        "menu": {
+            "label": "Menu",
+            "info": "Displays only top-level menu items."
+
+        }
+      }
+    },
+    "announcement-bar": {
+      "name": "Announcement bar",
+      "settings": {
+        "content": {
+          "label": "Content",
+          "info": "The content to display in the announcement bar."
+        }
+      }
+    },
     "footer": {
       "name": "Footer",
       "blocks": {
