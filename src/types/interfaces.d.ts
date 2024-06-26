@@ -5,6 +5,7 @@ import { PaginatorNavigation } from '@/elements/paginator'
 import { BaseElement } from '@/elements/base-element'
 import { CursorState } from '@/elements/cursor'
 import { IBaseElement } from '@/types/interfaces'
+import { IDrawerElement } from '@/elements/drawer-element'
 
 /**
  * Interface representing the main Sakura object with methods for initialization, custom element definition, and logging.
@@ -414,18 +415,14 @@ export interface ICart {
 /**
  * Interface representing a cart drawer with methods to handle item updates and toggle visibility.
  */
-export interface ICartDrawer extends IBaseElement {
+export interface ICartDrawer extends IDrawerElement {
   elements:
     | {
-        menu: HTMLElement | undefined
         title: HTMLElement | undefined
         items: HTMLElement | undefined
         footer: HTMLElement | undefined
-        closeButton: HTMLButtonElement | undefined
-        openButton: HTMLButtonElement | undefined
       }
     | undefined
-  open: boolean | undefined
 
   /**
    * Handles the event when an item is added to the cart.
@@ -440,22 +437,10 @@ export interface ICartDrawer extends IBaseElement {
   onItemUpdated(data: unknown): void
 
   /**
-   * Handles the click event outside the cart drawer to close it.
-   * @param {Event} event - The click event.
-   */
-  onOutsideClick(event: Event): void
-
-  /**
    * Renders the HTML content for the cart drawer.
    * @param {string} html - The HTML content to render.
    */
   render(html: string): void
-
-  /**
-   * Toggles the open state of the cart drawer.
-   * @param {boolean} state - The state to set for the cart drawer.
-   */
-  toggleOpen(state: boolean): void
 }
 
 /**
@@ -479,29 +464,9 @@ export interface ICartRemoveItemButton extends BaseElement {
 /**
  * Interface representing a filter element with methods to handle filter toggling and changes.
  */
-export interface IFilter extends IBaseElement {
-  elements:
-    | {
-        openButton: HTMLButtonElement | undefined
-        closeButton: HTMLButtonElement | undefined
-      }
-    | undefined
-  open: boolean | undefined
+export interface IFilter extends IDrawerElement {
   filtering: boolean | undefined
   sorting: boolean | undefined
-
-  /**
-   * Toggles the filter state.
-   * @param {Event} event - The toggle event.
-   * @param {boolean} state - The state to set for the filter.
-   */
-  toggleFilter(event: Event, state: boolean): void
-
-  /**
-   * Handles the click event outside the filter to close it.
-   * @param {Event} event - The click event.
-   */
-  handleOutsideClick(event: Event): void
 
   /**
    * Handles the filter change event.
@@ -537,8 +502,6 @@ export interface ILocalizationForm extends IBaseElement {
   elements:
     | {
         input: HTMLInputElement | undefined
-        button: HTMLButtonElement | undefined
-        panel: HTMLElement | undefined
       }
     | undefined
 
@@ -547,28 +510,6 @@ export interface ILocalizationForm extends IBaseElement {
    * @param {Event} event - The item click event.
    */
   onItemClick(event: Event): void
-
-  /**
-   * Handles the key up event on the container.
-   * @param {KeyboardEvent} event - The key up event.
-   */
-  onContainerKeyUp(event: KeyboardEvent): void
-
-  /**
-   * Opens the selector panel.
-   */
-  openSelector(): void
-
-  /**
-   * Closes the selector panel on focus out event.
-   * @param {FocusEvent} event - The focus out event.
-   */
-  closeSelector(event: FocusEvent): void
-
-  /**
-   * Hides the panel.
-   */
-  hidePanel(): void
 }
 
 /**
@@ -653,4 +594,22 @@ export interface ICursor extends IBaseElement {
    * Handles various events related to the cursor.
    */
   manageEvents(): void
+}
+
+export interface IDrawerElement {
+  open: boolean | undefined
+  closeButton: HTMLButtonElement | undefined
+  openButton: HTMLButtonElement | undefined
+
+  /**
+   * Toggles the open state of the cart drawer.
+   * @param {boolean} state - The state to set for the cart drawer.
+   */
+  toggleOpen(state: boolean): void
+
+  /**
+   * Handles the click event outside the cart drawer to close it.
+   * @param {Event} event - The click event.
+   */
+  onOutsideClick(event: MouseEvent): void
 }

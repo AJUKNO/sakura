@@ -91,13 +91,13 @@
 
   {%- if show_badges -%}
     {%- if available == false -%}
-      <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-lg bg-indigo-500 drop-shadow-sm text-stone-100'>
+      <span class='text-xs uppercase font-black py-1 px-4 rounded-md bg-destructive text-destructive-foreground'>
         {{ 'products.product.sold_out' | t }}
       </span>
     {%- elsif compare_at_price > price
       and quantity_price_breaks_configured != true
     -%}
-      <span class='text-[0.6rem] uppercase font-bold tracking-widest py-1 px-4 rounded-lg bg-orange-500 drop-shadow-sm text-stone-100'>
+      <span class='text-xs uppercase font-black py-1 px-4 rounded-md bg-orange-500 drop-shadow-sm text-stone-100'>
         {{ 'products.product.on_sale' | t }}
       </span>
     {%- endif -%}

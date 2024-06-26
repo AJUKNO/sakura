@@ -29,17 +29,19 @@
 
 <section
   id='{{ section_id}}'
-  class='flex flex-col'
 >
   <cmp-cart
     data-id='cart'
     data-section='{{ section.id }}'
     data-loading='false'
     data-error='false'
-    class='flex flex-col'
+    class='grid grid-cols-12 gap-sm gap-y-lg px-md'
   >
     <!-- Cart header -->
-    <div data-id='cart-header' class='p-lg border-b-[1px] border-border/10'>
+    <div
+      data-id='cart-header'
+      class='col-span-full border-b-[1px] border-border/10'
+    >
       <h1 class='text-5xl'>
         {% if cart == empty %}
           {{ empty_label }}
@@ -69,19 +71,19 @@
       method='post'
       data-id='cart-form'
       id='{{ form_id }}'
-      class='p-lg flex-grow {% if cart == empty %}hidden{% endif %}'
+      class='flex-grow {% if cart == empty %}hidden{% endif %} col-span-8'
     >
       {% if cart != empty %}
         <div class='space-y-md'>
           {% comment %} Header {% endcomment %}
-          <div class='grid grid-cols-6 gap-md'>
-            <span class='col-span-4 text-xs uppercase tracking-widest font-bold'>
+          <div class='grid grid-cols-6 gap-lg uppercase font-bold text-sm'>
+            <span class='col-span-4'>
               {{ heading_product }}
             </span>
-            <span class='text-xs uppercase tracking-widest font-bold'>
+            <span>
               {{ heading_quantity }}
             </span>
-            <span class='text-xs uppercase tracking-widest font-bold'>
+            <span>
               {{ heading_total }}
             </span>
           </div>
@@ -98,11 +100,10 @@
 
     <!-- Cart footer -->
     <div
-      class='border-b-[1px] sticky bottom-0 z-10 bg-primary border-t-[1px] border-border/10 grid grid-cols-3'
+      class='col-start-9 sticky top-24 col-span-4 h-fit'
     >
       <div
         data-id='cart-footer'
-        class='border-r-[1px] border-border/10 p-lg'
       >
         {% if settings.show_cart_note %}
           <!-- Note -->
@@ -126,7 +127,7 @@
         {% comment %} Errors {% endcomment %}
         <div id='cart-errors-{{ section_id }}'></div>
       </div>
-      <div class='p-lg col-span-2 prose-lg font-light'>
+      <div class='prose-lg font-light'>
         <p>
           This is a modern, easy-to-wear piece based on the design source of the U.S.
           Army's M-65 Fishtail Parka. The collar has been arranged as a stand collar,

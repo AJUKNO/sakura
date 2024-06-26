@@ -24,7 +24,6 @@ class DraggableElement extends BaseElement implements IDraggableElement {
 
   public init(): void {
     // Add event listeners
-    console.log('Ya')
     this.addEventListener('mousedown', this.onDrag.bind(this))
   }
 

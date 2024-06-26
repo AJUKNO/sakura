@@ -1,0 +1,26 @@
+{% style %}
+  body {
+    margin-top: 7.5rem !important;
+  }
+    #search-drawer-menu, header {
+    top: 2.5rem !important;
+{% endstyle %}
+
+<div class='w-full fixed flex text-sm items-center justify-center top-0 h-10 bg-background z-30 border-b-[1px] border-border/10'>
+  {{ section.settings.announcement }}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "content",
+      "label": "t:sections.announcement-bar.settings.content.label",
+      "info": "t:sections.announcement-bar.settings.content.info",
+      "default": "Free shipping on all orders over $100"
+    }
+  ]
+}
+{% endschema %}

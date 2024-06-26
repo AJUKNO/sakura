@@ -22,12 +22,14 @@
 
 <div
   {{ attributes }}
-  class='font-light {{ class }}'
+  class='{{ class }}'
   data-id='{{ data_id }}'
 >
   {%- render 'price', product: product, use_variant: true, show_badges: true -%}
 
-  {%- render 'product-tax', block: block, product: product, section: section -%}
+  {% if show_tax %}
+    {%- render 'product-tax', block: block, product: product, section: section -%}
+  {% endif %}
 
   {%- render 'product-installments',
     block: block,

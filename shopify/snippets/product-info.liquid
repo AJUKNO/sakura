@@ -17,7 +17,7 @@
 <cmp-product-info
   data-id='product-info'
   data-section='{{ section.id }}'
-  class='group/info grid grid-cols-4 gap-sm relative {{ class }}'
+  class='group/info grid grid-cols-4 gap-x-sm relative {{ class }} space-y-md'
 >
   <!-- Product info blocks -->
   {%- for block in section.blocks -%}
@@ -47,7 +47,7 @@
           block: block,
           product: product,
           data_id: description_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'sku' -%}
         {%- assign sku_id = 'product-info-sku-' | append: section.id -%}
@@ -56,7 +56,7 @@
           product: product,
           section: section,
           data_id: sku_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'custom_liquid' -%}
         {{ block.settings.custom_liquid }}
@@ -67,7 +67,7 @@
           product: product,
           section: section,
           data_id: tab_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'quantity_selector' -%}
         {%- assign quantity_selector_id = 'product-info-quantity-selector-'
@@ -78,7 +78,7 @@
           section: section,
           product: product,
           data_id: quantity_selector_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
 
         {%- comment -%}
@@ -97,7 +97,7 @@
           section: section,
           update_url: true,
           data_id: variant_picker_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'price' -%}
         {%- assign price_id = 'product-info-price-' | append: section.id -%}
@@ -106,7 +106,8 @@
           product: product,
           section: section,
           data_id: price_id,
-          class: 'col-start-2 col-span-2'
+          show_tax: true,
+          class: 'col-span-full'
         -%}
       {%- when 'inventory' -%}
         {%- assign inventory_id = 'product-info-inventory-' | append: section.id -%}
@@ -115,7 +116,7 @@
           product: product,
           section: section,
           data_id: inventory_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'buy_buttons' -%}
         {%- assign buy_buttons_id = 'product-info-buy-buttons-'
@@ -126,7 +127,7 @@
           product: product,
           section: section,
           data_id: buy_buttons_id,
-          class: 'col-start-2 col-span-2'
+          class: 'col-span-full'
         -%}
       {%- when 'pickup_availability' -%}
         {%- assign pickup_availability_id = 'product-info-pickup-availability-'

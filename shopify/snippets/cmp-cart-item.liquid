@@ -30,25 +30,32 @@
 >
   {%- case style -%}
     {%- when 'page' -%}
-      <cmp-cart-remove-item-button class='group cursor-pointer relative grid grid-cols-6 gap-md'>
+      <div class='group cursor-pointer relative grid grid-cols-6 gap-lg'>
         {%- comment -%} Image {%- endcomment -%}
         <div>
           {%- if item.image -%}
             <a
               href='{{ item.url }}'
+              data-animate='fade-in'
+              data-animate-repeat
               class='aspect-w-10 group/item block aspect-h-16 relative transition-opacity duration-500 ease-in-out hover:opacity-80'
             >
-              {%- render 'cmp-media', image: item.image, lazy_load: true -%}
+              {%- render 'cmp-media',
+                media: item.image,
+                lazy_load: 'lazy',
+                class: 'media--fill',
+                type: 'image'
+              -%}
             </a>
           {%- endif -%}
         </div>
         {%- comment -%} Details {%- endcomment -%}
-        <div class='space-y-2 col-span-3'>
+        <div class='space-y-sm col-span-3'>
           {%- if settings.show_vendor -%}
-            <p>{{ item.product.vendor }}</p>
+            <p class='text-sm'>{{ item.product.vendor }}</p>
           {%- endif -%}
           <a
-            class='text-xs uppercase font-light tracking-widest'
+            class='font-black uppercase'
             href='{{ item.url }}'
           >
             {{- item.product.title | escape -}}
@@ -56,7 +63,7 @@
 
           {%- comment -%} Price {%- endcomment -%}
           {%- if item.original_price != item.final_price -%}
-            <div class='text-xs uppercase font-light tracking-widest'>
+            <div class='uppercase'>
               <span class='sr-only'>
                 {{ regular_price_label }}
               </span>
@@ -71,7 +78,7 @@
               </strong>
             </div>
           {%- else -%}
-            <div class='text-xs uppercase font-bold tracking-widest'>
+            <div class='uppercase'>
               {{ item.original_price | money }}
             </div>
           {%- endif -%}
@@ -81,10 +88,10 @@
             or item.properties.size != 0
             or item.selling_plan_allocation != null
           -%}
-            <dl class='text-xs uppercase font-bold tracking-widest space-y-1'>
+            <dl class='uppercase'>
               {%- if item.product.has_only_default_variant == false -%}
                 {%- for option in item.options_with_values -%}
-                  <div class='flex'>
+                  <div class='flex gap-sm'>
                     <dt>{{ option.name }}:</dt>
                     <dd class='font-light'>{{ option.value }}</dd>
                   </div>
@@ -190,16 +197,7 @@
             </div>
           {%- endif -%}
         </span>
-        <div class='absolute group-hover:visible group-hover:opacity-100 opacity-0 invisible trs-opacity flex items-center justify-center inset-0 bg-primary/50'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            class='h-6 w-6 fill-error'
-            viewBox='0 0 256 256'
-          >
-            <path d="M216,48H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM192,208H64V64H192ZM80,24a8,8,0,0,1,8-8h80a8,8,0,0,1,0,16H88A8,8,0,0,1,80,24Z"></path>
-          </svg>
-        </div>
-      </cmp-cart-remove-item-button>
+      </div>
     {%- when 'ass' -%}
       <div class='space-y-3'>
         {%- if item.image -%}
@@ -323,7 +321,7 @@
         -%}
       </div>
     {%- when 'drawer' -%}
-      <div class='grid gap-lg grid-cols-[25%,1fr_auto] border-[1px] border-background/20 rounded-md overflow-hidden'>
+      <div class='grid gap-lg grid-cols-[1fr,1fr_auto] border-[1px] border-border/10 rounded-md overflow-hidden'>
         <div class='shrink-0'>
           {%- if item.image -%}
             <a
