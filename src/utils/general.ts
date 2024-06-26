@@ -102,3 +102,11 @@ export const lerp = ({
   end: number
   amt: number
 }): number => (1 - amt) * start + amt * end
+
+export const debounce = (fn: (...args: unknown[]) => void, wait: number) => {
+  let t: string | number | NodeJS.Timeout | undefined
+  return (...args: unknown[]) => {
+    clearTimeout(t)
+    t = setTimeout(() => fn.apply(this, args), wait)
+  }
+}
