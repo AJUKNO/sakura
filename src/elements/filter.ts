@@ -1,62 +1,28 @@
-import { BaseElement } from '@/elements/base-element'
 import { IFilter } from '@/types/interfaces'
+import DrawerElement from '@/elements/drawer-element'
 
 /**
  * Filter
  * @extends BaseElement
  * @implements IFilter
  */
-class Filter extends BaseElement implements IFilter {
-  elements:
-    | {
-        openButton: HTMLButtonElement | undefined
-        closeButton: HTMLButtonElement | undefined
-      }
-    | undefined
+class Filter extends DrawerElement implements IFilter {
   filtering: boolean | undefined
-  open: boolean | undefined
   sorting: boolean | undefined
 
   init(): void {
-    // Get elements
-    this.elements = {
-      openButton: document.querySelector(
-        `[data-id=${this.identifier}-open-${this.section}]`,
-      ) as HTMLButtonElement,
-      closeButton: this.querySelector(
-        `[data-id=${this.identifier}-close-${this.section}]`,
-      ) as HTMLButtonElement,
-    }
+    super.init()
 
     // Get data attributes
-    this.open = this.hasAttribute('data-open')
     this.filtering = this.hasAttribute('data-filtering')
     this.sorting = this.hasAttribute('data-sorting')
 
-    // Init listeners
-    if (this.elements.openButton) {
-      this.elements.openButton.addEventListener('click', (event) =>
-        this.toggleFilter(event, true),
-      )
-    }
-    if (this.elements.closeButton) {
-      this.elements.closeButton.addEventListener('click', (event) =>
-        this.toggleFilter(event, false),
-      )
-    }
-    this.addEventListener('click', this.handleOutsideClick.bind(this))
     this.addEventListener('change', this.handleFilterChange.bind(this))
   }
 
   disconnectedCallback(): void {
     // Remove event listeners
-    this.elements?.openButton?.removeEventListener('click', (event) =>
-      this.toggleFilter(event, true),
-    )
-    this.elements?.closeButton?.removeEventListener('click', (event) =>
-      this.toggleFilter(event, false),
-    )
-    this.removeEventListener('click', this.handleOutsideClick.bind(this))
+    super.init()
     this.removeEventListener('change', this.handleFilterChange.bind(this))
   }
 
@@ -101,32 +67,10 @@ class Filter extends BaseElement implements IFilter {
       newUrl += `?${urlParams.toString()}`
     }
 
-    this.toggleFilter(event, false)
+    this.toggleOpen(false)
 
     // Update the URL
     window.location.href = newUrl
-  }
-
-  handleOutsideClick(event: Event): void {
-    // Check if the click event is outside the filter drawer
-    if (
-      event.target != null &&
-      (event.target as HTMLElement).closest(
-        `[data-id=${this.identifier}-drawer-${this.section}]`,
-      )
-    )
-      return
-
-    this.toggleFilter(event, false)
-  }
-
-  toggleFilter(event: Event, state: boolean): void {
-    // Prevent default form submission
-    event.preventDefault()
-
-    // Toggle the filter state
-    this.open = state
-    this.toggleAttribute('data-open', state)
   }
 }
 
