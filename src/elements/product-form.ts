@@ -78,11 +78,9 @@ class ProductForm extends BaseElement implements IProductForm {
       const res: {
         status: boolean
         description: string
-        sections: {
-          'cart-drawer': string
-        }
+        sections: Record<string, string>
       } = await HttpClient.post(
-        `${window.Shopify.strings.routes.cart.add}.js?sections=cart-drawer`,
+        `${window.Shopify.strings.routes.cart.add}.js?sections=cart-drawer,cart-button`,
         {
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -95,7 +93,10 @@ class ProductForm extends BaseElement implements IProductForm {
 
       // Handle cart updates with PubSub
       // Drawer will handle the rest
-      await SakuraPS.publish(SakuraCartEvent.ADD_ITEM, res.sections['cart-drawer'])
+      await SakuraPS.publish(
+        SakuraCartEvent.ADD_ITEM,
+        res.sections['cart-drawer'] + res.sections['cart-button'],
+      )
     } catch (error) {
       console.log(error)
       this.toggleError(true, (<Error>error).message)
