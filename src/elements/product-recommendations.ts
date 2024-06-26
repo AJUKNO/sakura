@@ -2,6 +2,9 @@ import { IProductRecommendations } from '@/types/interfaces'
 import { BaseElement } from '@/elements/base-element'
 import { HTMLParser, HttpClient } from '@/utils/general'
 import { SakuraLogger } from '@/utils/logger'
+import { animations } from '@/utils/animations'
+import { SakuraPS } from '@/utils/pubsub'
+import { SakuraRecommendationEvent } from '@/types/events'
 
 /**
  * ProductRecommendations
@@ -33,6 +36,8 @@ class ProductRecommendations extends BaseElement implements IProductRecommendati
       const parsedHTML = HTMLParser(html)
       const recommendations = parsedHTML.querySelector('cmp-product-recommendations')
       recommendations && (this.innerHTML = recommendations.innerHTML)
+      await SakuraPS.publish(SakuraRecommendationEvent.RECOMMENDATION)
+      animations()
     } catch (error) {
       SakuraLogger.e('Error fetching product recommendations', error)
     }
