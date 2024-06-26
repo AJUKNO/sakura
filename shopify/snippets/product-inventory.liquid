@@ -30,15 +30,15 @@
   assign inventory_out_of_stock_continue_selling = 'products.product.inventory_out_of_stock_continue_selling' | t
 %}
 
-<div
-  data-id='{{ data_id }}'
-  {{ attributes }}
-  class='{{ class }}'
->
-  {%- if target.inventory_management == 'shopify' -%}
+{%- if target.inventory_management == 'shopify' -%}
+  <div
+    data-id='{{ data_id }}'
+    {{ attributes }}
+    class='{{ class }}'
+  >
     <p
       role='status'
-      class='flex gap-2 uppercase items-center font-bold tracking-widest'
+      class='flex gap-2 uppercase items-center font-black text-sm'
     >
       {%- comment -%}
         If the product has inventory management set to Shopify, we can use the inventory_quantity
@@ -89,5 +89,5 @@
         {%- endif -%}
       {%- endif -%}
     </p>
-  {%- endif -%}
-</div>
+  </div>
+{%- endif -%}
