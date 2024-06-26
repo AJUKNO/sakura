@@ -23,6 +23,8 @@ export interface ShopifyStrings {
       change: string
       update: string
       url: string
+    }
+    search: {
       predictiveSearch: string
     }
   }
