@@ -1,130 +1,120 @@
-<footer class='bg-foreground text-background p-lg'>
-  <div class='flex pb-lg'>
-    <div class='basis-1/2 pr-lg'>
-      <h2 class='text-7xl font-hannari'>どうすればいい?</h2>
-      <p class='prose-2xl max-w-screen-lg font-light font-hannari'>
-        「ひまわり」は、夏に咲く黄色い花で、日本ではよく見られる植物です。その大きな黄色い花びらは、太陽のような明るさや元気を象徴します。ひまわりは、日向を好む植物であり、花が太陽の方向を向いて咲くことから、「向日葵」とも呼ばれます。そのため、日本では希望や活力の象徴としてしばしば利用されます。
+<footer class='grid grid-cols-12 gap-lg p-lg'>
+  <div class='flex col-span-4 flex-col gap-md'>
+    <div class='space-y-sm'>
+      <h2 class='text-2xl'>Newsletter</h2>
+      <p>
+        Stay informed with the latest updates from HIMAWARI GARMENTS. Enter your
+        email to subscribe to our newsletter. Your privacy is our priority. Sign up
+        now.
       </p>
     </div>
+    {%- form 'customer',
+      id: 'ContactFooter',
+      class: 'group/form space-y-sm',
+      novalidate: true
+    -%}
+      <input type='hidden' name='contact[tags]' value='newsletter'>
 
-    <div class='basis-1/2 px-lg'>
-      <div class='flex flex-col gap-md'>
-        <div>
-          <p class='text-xl'>Newsletter</p>
-          <h2 class='text-2xl'>Subscribe to our newsletter</h2>
-        </div>
-        {%- form 'customer',
-          id: 'ContactFooter',
-          class: 'group/form space-y-sm',
-          novalidate: true
-        -%}
-          <input type='hidden' name='contact[tags]' value='newsletter'>
-
-          <label class='relative block' for='NewsletterForm--{{ section.id }}'>
-            <span class='sr-only'>{{ 'newsletter.label' | t }}</span>
+      <label class='relative block' for='NewsletterForm--{{ section.id }}'>
+        <span class='sr-only'>{{ 'newsletter.label' | t }}</span>
+        <input
+          id='NewsletterForm--{{ section.id }}'
+          type='email'
+          name='contact[email]'
+          class='input'
+          value='{{ form.email }}'
+          aria-required='true'
+          autocorrect='off'
+          autocapitalize='off'
+          autocomplete='email'
+          {% if form.errors %}
+            autofocus
+            aria-invalid='true'
+            aria-describedby='ContactFooter-error'
+          {% elsif form.posted_successfully? %}
+            aria-describedby='ContactFooter-success'
+          {% endif %}
+          placeholder='{{ 'newsletter.label' | t }}'
+          required
+        >
+        <button
+          type='submit'
+          class='absolute top-0 bottom-0 right-0 px-md group-valid/form:visible invisible group-valid/form:opacity-100 opacity-0 transition-all duration-300 ease-in-out'
+          name='commit'
+          id='Subscribe'
+          aria-label='{{ 'newsletter.button_label' | t }}'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='w-5 h-auto fill-on-accent'
+            viewBox='0 0 256 256'
+          >
+            <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
+          </svg>
+        </button>
+      </label>
+      {%- if form.errors -%}
+        <p
+          id='ContactFooter-error'
+        >
+          {{- form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email -}}
+        </p>
+      {%- endif -%}
+      {% if shop.privacy_policy.body != blank %}
+        <label
+          for='ContactFooter-privacy-policy'
+          class='flex gap-sm items-center'
+        >
+          <div class='h-5 w-5 border-[1px] overflow-hidden border-on-accent/20 rounded-md flex items-center justify-center'>
             <input
-              id='NewsletterForm--{{ section.id }}'
-              type='email'
-              name='contact[email]'
-              class='border-[1px] border-on-accent/20 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-on-accent/20 focus:border-on-accent p-md w-full rounded-md text-on-accent bg-accent placeholder-on-accent/50'
-              value='{{ form.email }}'
-              aria-required='true'
-              autocorrect='off'
-              autocapitalize='off'
-              autocomplete='email'
-              {% if form.errors %}
-                autofocus
-                aria-invalid='true'
-                aria-describedby='ContactFooter-error'
-              {% elsif form.posted_successfully? %}
-                aria-describedby='ContactFooter-success'
-              {% endif %}
-              placeholder='{{ 'newsletter.label' | t }}'
+              id='ContactFooter-privacy-policy'
+              type='checkbox'
               required
+              name='contact[privacy_policy]'
+              class='peer sr-only'
             >
-            <button
-              type='submit'
-              class='absolute top-0 bottom-0 right-0 px-md group-valid/form:visible invisible group-valid/form:opacity-100 opacity-0 transition-all duration-300 ease-in-out'
-              name='commit'
-              id='Subscribe'
-              aria-label='{{ 'newsletter.button_label' | t }}'
-            >
+            <div class='flex rounded-sm items-center justify-center peer-checked:visible h-5 w-5 bg-on-accent invisible peer-checked:opacity-100 opacity-0 transition-all duration-300 ease-in-out'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
-                class='w-5 h-auto fill-on-accent'
+                class='h-3 w-auto fill-accent'
+                fill='currentColor'
                 viewBox='0 0 256 256'
               >
-                <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
+                <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
               </svg>
-            </button>
-          </label>
-          {%- if form.errors -%}
-            <p
-              id='ContactFooter-error'
-            >
-              {{- form.errors.translated_fields.email | capitalize }}
-              {{ form.errors.messages.email -}}
-            </p>
-          {%- endif -%}
-          {% if shop.privacy_policy.body != blank %}
-            <label
-              for='ContactFooter-privacy-policy'
-              class='flex gap-sm items-center'
-            >
-              <div class='h-5 w-5 border-[1px] overflow-hidden border-on-accent/20 rounded-md flex items-center justify-center'>
-                <input
-                  id='ContactFooter-privacy-policy'
-                  type='checkbox'
-                  required
-                  name='contact[privacy_policy]'
-                  class='peer sr-only'
-                >
-                <div class='flex rounded-sm items-center justify-center peer-checked:visible h-5 w-5 bg-on-accent invisible peer-checked:opacity-100 opacity-0 transition-all duration-300 ease-in-out'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    class='h-3 w-auto fill-accent'
-                    fill='currentColor'
-                    viewBox='0 0 256 256'
-                  >
-                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
-                  </svg>
-                </div>
-              </div>
-              <p>
-                {{
-                  'newsletter.privacy_policy_html'
-                  | t: link: shop.privacy_policy.url
-                }}
-              </p>
-            </label>
-          {% endif %}
+            </div>
+          </div>
+          <p>
+            {{ 'newsletter.privacy_policy_html' | t: link: shop.privacy_policy.url }}
+          </p>
+        </label>
+      {% endif %}
 
-          {%- if form.posted_successfully? -%}
-            <h3
-              id='ContactFooter-success'
-              tabindex='-1'
-              autofocus
-            >
-              {{- 'newsletter.success' | t }}
-            </h3>
-          {%- endif -%}
-        {%- endform -%}
-      </div>
-    </div>
+      {%- if form.posted_successfully? -%}
+        <h3
+          id='ContactFooter-success'
+          tabindex='-1'
+          autofocus
+        >
+          {{- 'newsletter.success' | t }}
+        </h3>
+      {%- endif -%}
+    {%- endform -%}
   </div>
 
   {%- assign menus = section.blocks | where: 'type', 'link_list' -%}
   {% if menus.size > 0 %}
-    <div class='flex border-t-[1px] border-on-accent/20'>
+    <div class='col-span-full grid grid-cols-12 gap-lg'>
       {% for block in section.blocks %}
         {% if block.type == 'link_list' and block.settings.menu != blank %}
-          <ul class='py-xl px-lg first:px-0 flex flex-col gap-sm basis-1/4 border-r-[1px] last:border-none border-on-accent/20'>
-            <li class='mb-md text-xl'>{{ block.settings.heading }}</li>
+          <ul class='col-span-2'>
+            <li class='mb-md font-black uppercase'>{{ block.settings.heading }}</li>
             {%- for link in block.settings.menu.links -%}
               <li>
                 <a
                   href='{{ link.url }}'
-                  class='text-on-accent link {% if link.active %}underline{% else %}no-underline{% endif %}'
+                  class='link text-sm {% if link.active %}underline{% else %}no-underline{% endif %}'
                 >
                   {{ link.title }}
                 </a>
@@ -136,21 +126,23 @@
     </div>
   {% endif %}
 
-  {% if true %}
-    {%- render 'country-selector' -%}
+  <div class='col-span-full gap-lg flex'>
+    {% if localization.available_languages.size > 1
+      or localization.available_countries.size > 1
+    %}
+      {%- render 'country-selector' -%}
 
-    {%- render 'language-selector' -%}
-  {% endif %}
+      {%- render 'language-selector' -%}
+    {% endif %}
+  </div>
 
-  <div class='flex justify-between items-center border-t-[1px] border-on-accent/20 pt-lg'>
-    <p>© HIMAWARI GARMENTS</p>
+  <div class='flex col-span-full justify-between items-center border-t-[1px] border-on-accent/20 pt-lg'>
+    <p class='font-black'>
+      <span>© HIMAWARI GARMENTS</span>
+    </p>
     <div class='flex gap-md'>
       {% for type in shop.enabled_payment_types -%}
-        {{
-          type
-          | payment_type_svg_tag:
-            class: 'drop-shadow-md mix-blend-luminosity w-auto h-7'
-        }}
+        {{ type | payment_type_svg_tag: class: 'mix-blend-luminosity w-auto h-7' }}
       {% endfor %}
     </div>
   </div>

@@ -33,11 +33,13 @@
 
 <section
   id='{{ section_id }}'
-  class='grid grid-cols-12 gap-sm gap-y-lg px-md'
+  class='grid grid-cols-12 gap-lg gap-y-lg px-lg'
 >
   <!-- Collection image -->
   {%- if image != blank -%}
     <div
+      data-animate='fade-in'
+      data-animate-repeat
       class='relative col-span-full border-b-[1px] border-border/10 aspect-w-16 aspect-h-7'
     >
       {% render 'cmp-media',
@@ -62,12 +64,29 @@
   {%- endif -%}
 
   <!-- Collection header -->
-  <div class='col-start-5 col-span-full'>
-    <h1 class='flex items-center gap-sm'>
+  <div class='col-start-5 col-span-full grid grid-cols-8 gap-lg sticky top-20 z-10 justify-between'>
+    <h1 class='flex items-center gap-sm col-span-4'>
       <span class='sr-only'>{{ collection_title }}</span>
       <span class='font-black uppercase'>{{ title }}</span>
       <sup class='text-xs'>{{ size }}</sup>
     </h1>
+
+    <!-- Open button -->
+    <button
+      data-id='filter-drawer-open-button'
+      class='font-black uppercase flex items-center col-span-4 gap-sm'
+    >
+      <span>Filter / Sort</span>
+      <sup>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          class='w-4 h-4'
+          viewBox='0 0 256 256'
+        >
+          <path d="M64,105V40a8,8,0,0,0-16,0v65a32,32,0,0,0,0,62v49a8,8,0,0,0,16,0V167a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,56,152Zm80-95V40a8,8,0,0,0-16,0V57a32,32,0,0,0,0,62v97a8,8,0,0,0,16,0V119a32,32,0,0,0,0-62Zm-8,47a16,16,0,1,1,16-16A16,16,0,0,1,128,104Zm104,64a32.06,32.06,0,0,0-24-31V40a8,8,0,0,0-16,0v97a32,32,0,0,0,0,62v17a8,8,0,0,0,16,0V199A32.06,32.06,0,0,0,232,168Zm-32,16a16,16,0,1,1,16-16A16,16,0,0,1,200,184Z"></path>
+        </svg>
+      </sup>
+    </button>
   </div>
 
   {% if collection.products_count == 0 %}

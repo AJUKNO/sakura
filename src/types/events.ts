@@ -16,7 +16,15 @@ export enum SakuraFilterEvent {
   CHANGE = 'filter:change',
 }
 
-export type SakuraEvent = SakuraCartEvent | SakuraProductEvent | SakuraFilterEvent
+export enum SakuraRecommendationEvent {
+  RECOMMENDATION = 'recommendation:load',
+}
+
+export type SakuraEvent =
+  | SakuraCartEvent
+  | SakuraProductEvent
+  | SakuraFilterEvent
+  | SakuraRecommendationEvent
 
 export interface SakuraSubscriberCallback {
   /**
@@ -25,6 +33,13 @@ export interface SakuraSubscriberCallback {
    */
   (...data: unknown[]): Promise<void>
 }
+
+export const combinedEvents = [
+  ...Object.values(SakuraCartEvent),
+  ...Object.values(SakuraProductEvent),
+  ...Object.values(SakuraFilterEvent),
+  ...Object.values(SakuraRecommendationEvent),
+]
 
 export interface ISakuraPubSub {
   /**

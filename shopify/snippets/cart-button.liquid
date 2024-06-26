@@ -1,0 +1,11 @@
+<button
+  type='button'
+  aria-label='Open Cart'
+  data-id='cart-drawer-open-button'
+  class='flex items-center gap-sm uppercase'
+>
+  <span>Cart</span>
+  {%- if cart != empty -%}
+    <sup class='text-xs'>{{ cart.item_count }}</sup>
+  {%- endif -%}
+</button>

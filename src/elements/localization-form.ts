@@ -1,12 +1,13 @@
 import { BaseElement } from '@/elements/base-element'
 import { ILocalizationForm } from '@/types/interfaces'
+import DrawerElement from '@/elements/drawer-element'
 
 /**
  * LocalizationForm
  * @extends BaseElement
  * @implements ILocalizationForm
  */
-class LocalizationForm extends BaseElement implements ILocalizationForm {
+class LocalizationForm extends DrawerElement implements ILocalizationForm {
   elements:
     | {
         input: HTMLInputElement | undefined
@@ -16,6 +17,8 @@ class LocalizationForm extends BaseElement implements ILocalizationForm {
     | undefined
 
   init(): void {
+    super.init()
+
     // Get elements
     this.elements = {
       input: this.querySelector(
@@ -26,48 +29,17 @@ class LocalizationForm extends BaseElement implements ILocalizationForm {
     }
 
     // Add event listeners
-    this.elements.button?.addEventListener('click', this.openSelector.bind(this))
-    this.elements.button?.addEventListener('focusout', this.closeSelector.bind(this))
-    this.addEventListener('keyup', this.onContainerKeyUp.bind(this))
     this.querySelectorAll('a').forEach((item) =>
       item.addEventListener('click', this.onItemClick.bind(this)),
     )
   }
 
   disconnectedCallback(): void {
-    if (this.elements?.button) {
-      this.elements.button.removeEventListener('click', this.openSelector.bind(this))
-      this.elements.button.removeEventListener(
-        'focusout',
-        this.closeSelector.bind(this),
-      )
-    }
-    this.removeEventListener('keyup', this.onContainerKeyUp.bind(this))
+    super.disconnectedCallback()
+
     this.querySelectorAll('a').forEach((item) =>
       item.removeEventListener('click', this.onItemClick.bind(this)),
     )
-  }
-
-  closeSelector(event: FocusEvent): void {
-    const shouldClose =
-      event.relatedTarget &&
-      (event.relatedTarget as HTMLElement).nodeName === 'BUTTON'
-
-    if (event.relatedTarget === null || shouldClose) {
-      this.hidePanel()
-    }
-  }
-
-  hidePanel(): void {
-    this.elements?.button?.setAttribute('aria-expanded', 'false')
-    this.elements?.panel?.setAttribute('hidden', 'true')
-  }
-
-  onContainerKeyUp(event: KeyboardEvent): void {
-    if (event.code.toUpperCase() !== 'ESCAPE') return
-
-    this.hidePanel()
-    this.elements?.button?.focus()
   }
 
   onItemClick(event: Event): void {
@@ -78,15 +50,6 @@ class LocalizationForm extends BaseElement implements ILocalizationForm {
     }
 
     if (form) form.submit()
-  }
-
-  openSelector(): void {
-    this.elements?.button?.focus()
-    this.elements?.panel?.toggleAttribute('hidden')
-    this.elements?.button?.setAttribute(
-      'aria-expanded',
-      (this.elements.button.getAttribute('aria-expanded') === 'false').toString(),
-    )
   }
 }
 

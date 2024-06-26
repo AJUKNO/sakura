@@ -85,7 +85,7 @@ class Cart extends BaseElement implements ICart {
         body: JSON.stringify({
           line,
           quantity,
-          sections: [this.section, 'cart-drawer'],
+          sections: [this.section, 'cart-drawer', 'cart-button'],
           sections_url: window.location.pathname,
         }),
       }).then((res) => res.json())
@@ -100,7 +100,7 @@ class Cart extends BaseElement implements ICart {
       ) {
         await SakuraPS.publish(
           SakuraCartEvent.UPDATE_ITEM,
-          res.sections['cart-drawer'],
+          res.sections['cart-drawer'] + res.sections['cart-button'],
         )
       } else if (this.section) {
         rerenderBySelector('[data-id=cart-form]', res.sections[this.section])
