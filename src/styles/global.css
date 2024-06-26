@@ -2,13 +2,34 @@
 @import url('nouislider/dist/nouislider.css');
 @import url('https://fonts.googleapis.com/earlyaccess/kokoro.css');
 @import url('https://fonts.googleapis.com/earlyaccess/hannari.css');
-@import url('locomotive-scroll/dist/locomotive-scroll.css');
+@import url('locomotive-scroll/bundled/locomotive-scroll.css');
 @import url('swiper/swiper-bundle.css');
 @import url('https://fonts.cdnfonts.com/css/satoshi');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
 
 html {
   font-size: 12px;
@@ -20,6 +41,9 @@ html {
 
 body {
   font-family: 'Satoshi', sans-serif;
+  /*font-weight: var(--font-body-weight);*/
+  /*font-style: var(--font-body-style);*/
+  /*font-family: var(--font-body-family);*/
   @apply bg-background text-foreground;
 }
 
@@ -82,7 +106,7 @@ summary {
 
 .media--fill img,
 .media--fill video {
-  @apply object-contain w-full h-full;
+  @apply object-cover w-full h-full;
 }
 
 .shopify-payment-button button:not([aria-disabled='true']) {
@@ -114,7 +138,7 @@ summary {
 @layer base {
   :root {
     --color-background: 255 255 255;
-    --color-foreground: 72 64 77;
+    --color-foreground: 50 35 32;
     --color-muted: 167 118 124;
     --color-muted-foreground: 255 242 225;
     --color-border: 72 64 77;
@@ -232,14 +256,14 @@ summary {
   }
 
   .dropdown {
-    @apply appearance-none hover:opacity-80 p-md w-full rounded-lg hover:ring-4 outline-none focus:ring-4 bg-white transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+    @apply appearance-none text-sm hover:opacity-80 p-md w-full rounded-md hover:ring-4 outline-none focus:ring-4 border-[1px] border-border/10 transition-all duration-200 ease-in-out ring-accent/20;
   }
 
   .quantity-selector {
-    @apply rounded-md bg-white text-foreground hover:opacity-80 flex gap-md hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+    @apply rounded-md border-[1px] border-border/10 text-foreground hover:opacity-80 flex gap-md hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out ring-accent/20;
 
     &--small {
-      @apply bg-transparent text-xs text-background border-[1px] border-background/20;
+      @apply bg-transparent text-xs text-foreground border-[1px] border-border/10;
     }
   }
 
@@ -251,7 +275,7 @@ summary {
       }
     } */
   .input {
-    @apply p-md text-xs rounded-lg border-[1px] border-border/20 hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+    @apply p-md text-sm hover:opacity-80 w-full rounded-md border-[1px] border-border/10 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out ring-accent/20;
 
     &--outline {
       @apply border-[1px] bg-transparent border-current;
