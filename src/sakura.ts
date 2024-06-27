@@ -1,6 +1,7 @@
 import { Logger, SakuraLogger } from '@/utils/logger'
 import { ascii } from '@/utils/ascii'
 import type {
+  IBarbaOptions,
   ICustomElement,
   ILogger,
   ISakura,
@@ -16,9 +17,12 @@ import {
 import { artValues } from '@/utils/general'
 import { ISakuraPubSub } from '@/types/events'
 import { SakuraPS } from '@/utils/pubsub'
+import LocomotiveScroll from 'locomotive-scroll'
+import barba from '@barba/core'
 
 export class Sakura implements ISakura {
   customElementsRegistry: Map<string, CustomElementConstructor> = new Map()
+  elements: ICustomElement[] = []
   options: ISakuraOptions
   logger: ILogger = SakuraLogger
   pubSub: ISakuraPubSub = SakuraPS
@@ -34,6 +38,18 @@ export class Sakura implements ISakura {
     }
     if (this.options.prefix) {
       this.logger = new Logger(this.options.prefix)
+    }
+
+    if (this.options.locomotive) {
+      new LocomotiveScroll({
+        lenisOptions: {
+          duration: 0.7,
+        },
+      })
+    }
+
+    if (this.options.barba?.enabled) {
+      this.initBarba(this.options.barba)
     }
 
     callback && callback()
@@ -67,6 +83,7 @@ export class Sakura implements ISakura {
   }
 
   define(elements: ICustomElement[]): void {
+    this.elements = elements
     elements.forEach(({ tagName, elementClass }) => {
       if (document.querySelector(tagName) === null) {
         this.options.debug &&
@@ -86,14 +103,7 @@ export class Sakura implements ISakura {
   }
 
   reset(): void {
-    this.define(
-      Array.from(this.customElementsRegistry.entries()).map(
-        ([tagName, elementClass]) => {
-          this.options.debug && this.logger.d(`Resetting ${tagName}`)
-          return { tagName, elementClass }
-        },
-      ),
-    )
+    this.define(this.elements)
   }
 
   kawaii(art: SakuraArt, greeting?: string): void {
@@ -103,5 +113,23 @@ export class Sakura implements ISakura {
       throw new Error(`Art ${art} not found`)
     }
     greeting && this.logger.i(greeting)
+  }
+
+  private initBarba(options: IBarbaOptions): void {
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual'
+    }
+
+    barba.init({
+      views: options.views,
+      transitions: options.transitions,
+    })
+    options.hooks &&
+      Object.keys(options.hooks).forEach((hook: string) => {
+        // @ts-expect-error: Should return HookFunction from options
+        options.hooks?.[hook] && barba.hooks[hook](options.hooks[hook])
+      })
+
+    barba.hooks.beforeEnter(() => this.reset())
   }
 }

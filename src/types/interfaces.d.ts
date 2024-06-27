@@ -6,12 +6,15 @@ import { BaseElement } from '@/elements/base-element'
 import { CursorState } from '@/elements/cursor'
 import { IBaseElement } from '@/types/interfaces'
 import { IDrawerElement } from '@/elements/drawer-element'
+import { HookFunction, IView } from '@barba/core'
+import { ITransitionPage } from '@barba/core/dist/core/src/defs'
 
 /**
  * Interface representing the main Sakura object with methods for initialization, custom element definition, and logging.
  */
 export interface ISakura {
   customElementsRegistry: Map<string, CustomElementConstructor>
+  elements: ICustomElement[]
   options: ISakuraOptions
   logger: ILogger
   pubSub: ISakuraPubSub
@@ -50,7 +53,7 @@ export type SakuraArt = (typeof artValues)[number]
  * Interface representing the options for initializing Sakura.
  */
 export interface ISakuraOptions {
-  barba?: boolean
+  barba?: IBarbaOptions
   locomotive?: boolean
   debug?: boolean
   prefix?: string
@@ -58,6 +61,17 @@ export interface ISakuraOptions {
     art: SakuraArt
     greeting?: string
   }
+}
+
+export interface IBarbaOptions {
+  enabled?: boolean
+  views?: IView[]
+  hooks?: {
+    beforeEnter?: HookFunction
+    afterEnter?: HookFunction
+    beforeLeave?: HookFunction
+  }
+  transitions?: ITransitionPage[]
 }
 
 /**
