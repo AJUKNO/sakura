@@ -13,7 +13,7 @@ import {
   SAKURA_KAWAII_ART,
   SAKURA_KAWAII_GREETING,
 } from '@/utils/constants'
-import { artValues } from '@/utils/general'
+import { artValues, initEasterEgg } from '@/utils/general'
 import { ISakuraPubSub } from '@/types/events'
 import { SakuraPS } from '@/utils/pubsub'
 import { animations } from '@/utils/animations'
@@ -39,6 +39,22 @@ export class Sakura implements ISakura {
     this.init(this.options)
   }
 
+  static defineElement(element: ICustomElement, debug?: boolean): void {
+    if (document.querySelector(element.tagName) === null) {
+      SakuraLogger.w(
+        `Element ${element.tagName} not found in the DOM. Skipping definition`,
+      )
+      return
+    }
+
+    if (!customElements.get(element.tagName)) {
+      debug && SakuraLogger.d(`Defining ${element.tagName}`)
+      customElements.define(element.tagName, element.elementClass)
+    } else {
+      SakuraLogger.w(`Element ${element.tagName} already defined`)
+    }
+  }
+
   init(options: ISakuraOptions): void {
     if (options.kawaii) {
       this.logger.i(ascii[options.kawaii.art])
@@ -48,6 +64,7 @@ export class Sakura implements ISakura {
     }
     options.debug && this.logger.d(SAKURA_DEBUG_GREETING)
     animations()
+    initEasterEgg()
   }
 
   define(elements: ICustomElement[]): void {

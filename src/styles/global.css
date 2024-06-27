@@ -135,6 +135,18 @@ summary {
   @apply prose text-foreground;
 }
 
+#easter-egg {
+  @apply drop-shadow-xl rounded-md bg-[#F4ABC4] h-96 w-[36rem] animate-fade-in overflow-hidden transition-opacity text-[0.4rem] duration-300 ease-in-out fixed top-1/2 left-1/2 z-50;
+
+  & > * {
+    @apply pointer-events-none;
+  }
+
+  & > img {
+    @apply object-cover w-full h-full mix-blend-luminosity;
+  }
+}
+
 @layer base {
   :root {
     --color-background: 255 255 255;
@@ -236,7 +248,7 @@ summary {
 
 @layer components {
   cmp-cursor {
-    @apply fixed rounded-full z-50 pointer-events-none flex items-center justify-center transform -translate-x-[20%] -translate-y-[20%] transition-all duration-200 ease-out;
+    @apply fixed rounded-full z-[60] pointer-events-none flex items-center justify-center transform -translate-x-[20%] -translate-y-[20%] transition-all duration-200 ease-out;
   }
 
   .btn {
@@ -283,7 +295,7 @@ summary {
   }
 
   .textarea {
-    @apply p-md bg-transparent text-sm rounded-lg border-[1px] placeholder-background/50 border-background/20 hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
+    @apply p-md text-sm rounded-md border-[1px]  border-border/10 hover:opacity-80 hover:ring-4 outline-none focus:ring-4 transition-all duration-200 ease-in-out drop-shadow-sm ring-accent/20;
   }
 
   .link {
