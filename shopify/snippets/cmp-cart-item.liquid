@@ -30,7 +30,7 @@
 >
   {%- case style -%}
     {%- when 'page' -%}
-      <div class='group cursor-pointer relative grid grid-cols-6 gap-lg'>
+      <div class='group hover:bg-foreground/[0.03] duration-300 ease-in-out transition-all cursor-pointer relative grid grid-cols-6 gap-lg'>
         {%- comment -%} Image {%- endcomment -%}
         <div>
           {%- if item.image -%}
@@ -321,7 +321,7 @@
         -%}
       </div>
     {%- when 'drawer' -%}
-      <div class='grid gap-lg grid-cols-[1fr,1fr_auto] border-[1px] border-border/10 rounded-md overflow-hidden'>
+      <div class='grid gap-lg hover:bg-foreground/[0.03] duration-300 ease-in-out transition-all grid-cols-[1fr,1fr_auto] border-[1px] border-border/10 rounded-md overflow-hidden'>
         <div class='shrink-0'>
           {%- if item.image -%}
             <a
