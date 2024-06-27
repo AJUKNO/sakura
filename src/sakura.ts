@@ -13,10 +13,9 @@ import {
   SAKURA_KAWAII_ART,
   SAKURA_KAWAII_GREETING,
 } from '@/utils/constants'
-import { artValues, initEasterEgg } from '@/utils/general'
+import { artValues } from '@/utils/general'
 import { ISakuraPubSub } from '@/types/events'
 import { SakuraPS } from '@/utils/pubsub'
-import { animations } from '@/utils/animations'
 
 export class Sakura implements ISakura {
   customElementsRegistry: Map<string, CustomElementConstructor> = new Map()
@@ -24,7 +23,7 @@ export class Sakura implements ISakura {
   logger: ILogger = SakuraLogger
   pubSub: ISakuraPubSub = SakuraPS
 
-  constructor(options: ISakuraOptions) {
+  constructor(options: ISakuraOptions, callback?: () => void) {
     this.options = {
       debug: SAKURA_DEBUG,
       kawaii: {
@@ -36,6 +35,8 @@ export class Sakura implements ISakura {
     if (this.options.prefix) {
       this.logger = new Logger(this.options.prefix)
     }
+
+    callback && callback()
     this.init(this.options)
   }
 
@@ -63,8 +64,6 @@ export class Sakura implements ISakura {
       }
     }
     options.debug && this.logger.d(SAKURA_DEBUG_GREETING)
-    animations()
-    initEasterEgg()
   }
 
   define(elements: ICustomElement[]): void {

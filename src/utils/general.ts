@@ -1,5 +1,7 @@
 import { Sakura } from '@/sakura'
 import EasterEgg from '@/elements/easter-egg'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export const artValues = [
   'pompompurin',
@@ -8,6 +10,7 @@ export const artValues = [
   'cinnamoroll',
   'doraemon',
   'yuuka',
+  'lain',
 ] as const
 
 /**
@@ -121,6 +124,8 @@ export const debounce = (fn: (...args: unknown[]) => void, wait: number) => {
 
 /**
  * Initialize the easter egg
+ * Adds an easter egg to the page by listening to the Konami code
+ * If the Konami code is entered, an image of Lain from Serial Experiments Lain is added to the page
  * @returns {void}
  */
 export const initEasterEgg = (): void => {
@@ -162,4 +167,50 @@ export const initEasterEgg = (): void => {
       konamiCodePosition = 0
     }
   })
+}
+
+export const animateSvgLogo = () => {
+  gsap.registerPlugin(ScrollTrigger)
+  const colors = [
+    '#322320', // Original color
+    '#4A3A2A',
+    '#5C4C3C',
+    '#7A6351',
+    '#948079',
+    '#BBA9A0',
+    '#ECB176',
+    '#E6B325',
+  ]
+  const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)]
+  const getRandomPaths = () => {
+    const paths = document.querySelectorAll('#himawari path')
+    return Array.from(paths)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, Math.floor(paths.length * 0.5))
+  }
+  const animatePaths = () => {
+    const randomPaths = getRandomPaths()
+    gsap.to(randomPaths, {
+      duration: 1,
+      stagger: 0.02,
+      fill: () => getRandomColor(),
+      onComplete: animatePaths,
+    })
+  }
+
+  gsap.set('#himawari path', {
+    opacity: 0,
+    scrollTrigger: {
+      trigger: '#himawari',
+    },
+  })
+
+  gsap.to('#himawari path', {
+    duration: 2,
+    stagger: 0.1,
+    ease: 'power4',
+    opacity: 1,
+  })
+
+  animatePaths()
 }
