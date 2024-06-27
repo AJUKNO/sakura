@@ -1,6 +1,10 @@
 {% if collection and collection != empty %}
   {% liquid
-    assign media = collection.featured_image
+    if collection.featured_image != null
+      assign media = collection.featured_image
+    else
+      assign media = collection.products.first.featured_media
+    endif
     assign url = collection.url
     assign title = collection.title | escape
   %}
