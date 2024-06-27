@@ -1,6 +1,5 @@
 import { BaseElement } from '@/elements/base-element'
 import { IBaseElement } from '@/types/interfaces'
-import { SakuraLogger } from '@/utils/logger'
 
 export interface IDraggableElement extends IBaseElement {
   offset: {
@@ -38,8 +37,6 @@ class DraggableElement extends BaseElement implements IDraggableElement {
       x: event.clientX - this.getBoundingClientRect().left,
       y: event.clientY - this.getBoundingClientRect().top,
     }
-
-    SakuraLogger.d('Dragging element', this.offset)
 
     document.addEventListener('mousemove', this.onMouseMove.bind(this))
     document.addEventListener('mouseup', this.onMouseUp.bind(this))
