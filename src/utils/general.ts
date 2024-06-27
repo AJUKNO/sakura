@@ -1,3 +1,6 @@
+import { Sakura } from '@/sakura'
+import EasterEgg from '@/elements/easter-egg'
+
 export const artValues = [
   'pompompurin',
   'hello_kitty',
@@ -103,10 +106,60 @@ export const lerp = ({
   amt: number
 }): number => (1 - amt) * start + amt * end
 
+/**
+ * Debounce function
+ * @param fn
+ * @param wait
+ */
 export const debounce = (fn: (...args: unknown[]) => void, wait: number) => {
   let t: string | number | NodeJS.Timeout | undefined
   return (...args: unknown[]) => {
     clearTimeout(t)
     t = setTimeout(() => fn.apply(this, args), wait)
   }
+}
+
+/**
+ * Initialize the easter egg
+ * @returns {void}
+ */
+export const initEasterEgg = (): void => {
+  const konamiCode: string[] = [
+    'ArrowUp',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowLeft',
+    'ArrowRight',
+    'KeyB',
+    'KeyA',
+  ]
+  let konamiCodePosition = 0
+
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    const keyCode = event.code
+    const render = () => {
+      const easterEgg = document.createElement('easter-egg')
+      easterEgg.setAttribute('id', 'easter-egg')
+      easterEgg.innerHTML = `<img src="https://miorin.neocities.org/themes/random/images/static30.gif" alt="Lain">`
+      document.querySelector('body')?.append(easterEgg)
+    }
+
+    if (keyCode === konamiCode[konamiCodePosition]) {
+      konamiCodePosition++
+
+      if (konamiCodePosition === konamiCode.length) {
+        render()
+        Sakura.defineElement({
+          tagName: 'easter-egg',
+          elementClass: EasterEgg,
+        })
+        konamiCodePosition = 0
+      }
+    } else {
+      konamiCodePosition = 0
+    }
+  })
 }
