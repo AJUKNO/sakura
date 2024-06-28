@@ -10,27 +10,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
-
 html {
   font-size: 12px;
 }
@@ -60,28 +39,6 @@ summary {
   &::marker {
     content: '';
   }
-}
-
-.toggle {
-  appearance: none;
-  display: none;
-}
-
-.toggle + label:before {
-  content: '⯈';
-  display: inline-block;
-  line-height: 0;
-}
-
-.toggle ~ .details {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 1s ease-in-out;
-}
-
-.toggle:checked ~ .details {
-  max-height: 100vh;
-  opacity: 1;
 }
 
 [data-animate] {
