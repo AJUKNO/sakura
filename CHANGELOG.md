@@ -1,5 +1,11 @@
 # @ajukno/ts-starter
 
+## 1.1.2
+
+### Patch Changes
+
+-   3185e1e: Updated docs
+
 ## 1.1.1
 
 ### Patch Changes
