@@ -7,6 +7,10 @@ A TypeScript starter project template with essential configurations and scripts 
 testing.
 </p>
 
+<p align="center">
+<a href="https://www.npmjs.com/package/@ajukno/ts-starter"><img src="https://img.shields.io/npm/v/%40ajukno%2Fts-starter?labelColor=%23C75B7A&color=3D3B40" alt="NPM Version"></a>
+</p>
+
 ## Features
 
 - TypeScript
