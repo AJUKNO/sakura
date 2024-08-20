@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "eslint.config.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
