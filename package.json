@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build-fast": "tsup src/index.ts --format cjs,esm",
-    "build": "pnpm run build-fast -- --dts-resolve",
-    "build:watch": "pnpm run build-fast -- --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts-resolve",
+    "build:watch": "tsup src/index.ts --format cjs,esm --watch",
     "format": "prettier --write ./src",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
