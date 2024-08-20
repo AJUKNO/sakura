@@ -1,5 +1,11 @@
 # @ajukno/ts-starter
 
+## 1.1.1
+
+### Patch Changes
+
+-   13ea04e: Fixed scripts not generating d.ts
+
 ## 1.1.0
 
 ### Minor Changes
