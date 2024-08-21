@@ -1,5 +1,11 @@
 # @ajukno/ts-starter
 
+## 1.1.4
+
+### Patch Changes
+
+- 6147c00: Updated package.json
+
 ## 1.1.3
 
 ### Patch Changes
