@@ -4,6 +4,10 @@
   "description": "Template for creating TypeScript libraries",
   "author": "AJUKNO",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajukno/ts-starter.git"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
