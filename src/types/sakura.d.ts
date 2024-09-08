@@ -93,9 +93,9 @@ export interface ISakura<
    * plugins provided in the options.
    *
    * @param options - The options to initialize the Sakura instance with.
-   * @returns {void}
+   * @returns {void | Promise<void>} A promise that resolves when the Sakura instance has been initialized.
    */
-  init(options: SakuraOptions<T, U, E>): void;
+  init(options: SakuraOptions<T, U, E>): void | Promise<void>;
 
   /**
    * Returns whether debugging mode is enabled.

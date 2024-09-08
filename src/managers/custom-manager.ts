@@ -21,7 +21,7 @@ export default class CustomManager implements ElementManager<ElementProvider> {
 
         elementConstructor = (await res).default;
       } catch {
-        // If its not callable and throws an error, it's already a CustomElementConstructor
+        // If it's not callable and throws an error, it's already a CustomElementConstructor
         elementConstructor = element as CustomElementConstructor;
       }
 
@@ -37,9 +37,9 @@ export default class CustomManager implements ElementManager<ElementProvider> {
     this.elements.clear();
   }
 
-  redefine(): void {
-    this.elements.forEach(async (element, tag) => {
+  async redefine(): Promise<void> {
+    for (const [tag, element] of this.elements) {
       await this.defineElement(tag, element);
-    });
+    }
   }
 }

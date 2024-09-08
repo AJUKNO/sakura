@@ -42,9 +42,9 @@ export interface ElementManager<T> {
   /**
    * Redefines all previously defined elements. This method is useful for reapplying definitions.
    *
-   * @returns {void}
+   * @returns {void | Promise<void>} A promise that resolves when all elements have been redefined.
    */
-  redefine(): void;
+  redefine(): void | Promise<void>;
 }
 
 /**

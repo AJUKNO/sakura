@@ -1,22 +1,15 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "ESNext",
     "strict": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
     "baseUrl": "."
   },
-  "include": [
-    "src/**/*",
-    "tests/**/*",
-    "eslint.config.js"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*", "tests/**/*", "eslint.config.js"],
+  "exclude": ["node_modules"]
 }
