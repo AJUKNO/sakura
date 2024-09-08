@@ -59,11 +59,14 @@ export default class Logger implements ILogger {
       : '';
     const colorPrefix = this.options.useColors ? `\x1b[${levelColor}m` : '';
     const colorSuffix = this.options.useColors ? `\x1b[0m` : '';
-    return `${timestamp}${colorPrefix}${this.options.prefix ?? ''} ${level}${colorSuffix}: ${message}`;
+    const prefix = this.options.prefix ? `${this.options.prefix} ` : '';
+
+    return `${timestamp}${colorPrefix}${prefix}${level}${colorSuffix}: ${message}`;
   }
 
   private formatLabel(label: string): string {
-    return `${this.options.prefix} ${label}`;
+    const prefix = this.options.prefix ? `${this.options.prefix} ` : '';
+    return `${prefix}${label}`;
   }
 
   private getFormattedTimestamp(): string {
