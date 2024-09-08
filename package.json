@@ -1,19 +1,19 @@
 {
-  "name": "@ajukno/ts-starter",
-  "version": "1.1.4",
-  "description": "Template for creating TypeScript libraries",
+  "name": "@ajukno/sakura",
+  "version": "0.0.0",
+  "description": "Tool for defining and managing custom elements",
   "author": "AJUKNO",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ajukno/ts-starter.git"
+    "url": "git+https://github.com/ajukno/sakura.git"
   },
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "exports": {
-    "require": "./dist/index.js",
-    "import": "./dist/index.mjs"
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
   },
   "types": "./dist/index.d.ts",
   "files": [
@@ -38,18 +38,20 @@
   "keywords": [
     "typescript",
     "library",
-    "starter",
-    "template",
     "tsup",
     "eslint",
     "prettier",
-    "vitest"
+    "vitest",
+    "changesets",
+    "changeset"
   ],
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
     "@eslint/js": "^9.9.0",
     "@types/eslint__js": "^8.42.3",
+    "@vitest/coverage-v8": "^2.0.5",
     "eslint": "^9.9.0",
+    "jsdom": "^25.0.0",
     "prettier": "^3.3.3",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",

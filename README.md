@@ -1,82 +1,78 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/AJUKNO/ts-starter/develop/.github/assets/starter-banner.png" alt="Starter banner">
+  <img src="./.github/assets/sakura-banner.png" alt="Sakura banner">
 </p>
 
 <p align="center">
-A TypeScript starter project template with essential configurations and scripts for building, linting, formatting, and
-testing.
+  Sakura is a flexible framework for managing custom elements and plugins. It is built with TypeScript and provides a robust API for element and plugin management.
 </p>
 
 <p align="center">
-<a href="https://www.npmjs.com/package/@ajukno/ts-starter"><img src="https://img.shields.io/npm/v/%40ajukno%2Fts-starter?labelColor=%23C75B7A&color=3D3B40" alt="NPM Version"></a>
+<a href="https://www.npmjs.com/package/@ajukno/sakura"><img src="https://img.shields.io/npm/v/%40ajukno%2Fsakura?labelColor=%23C75B7A&color=3D3B40" alt="NPM Version"></a>
 </p>
 
 ## Features
 
-- TypeScript
-- ESLint
-- Prettier
-- Vitest
-- TSUP for bundling
+- Manages custom elements and plugins
+- Provides a flexible API for initialization and event handling
+- Supports asynchronous operations
 
-## Getting Started
+## Usage
 
-### Installation
+First, import Sakura into your project:
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/ajukno/ts-starter.git
-    cd ts-starter
-    ```
+```typescript
+import { sakura } from '@ajukno/sakura';
+```
 
-2. Install dependencies:
-    ```sh
-    pnpm install
-    ```
+Then, initialize Sakura with the options you want to use:
 
-### Scripts
+```typescript
+await sakura.init({
+  elements: [
+    { tagName: 'custom-element', element: CustomElementClass },
+  ],
+  plugins: [
+    CustomPlugin,
+  ],
+  debug: true,
+});
+```
 
-- `build-fast`: Quickly build the project without generating type declarations.
-    ```sh
-    pnpm run build-fast
-    ```
+You can add custom elements and plugins using the `init` method:
 
-- `build`: Build the project with type declarations.
-    ```sh
-    pnpm run build
-    ```
+```typescript
+await sakura.init({
+  elements: [
+    { tagName: 'another-element', element: AnotherElementClass },
+  ],
+  plugins: [
+    AnotherPlugin,
+  ],
+});
+```
 
-- `build:watch`: Watch for changes and rebuild the project.
-    ```sh
-    pnpm run build:watch
-    ```
+## API
 
-- `format`: Format the code using Prettier.
-    ```sh
-    pnpm run format
-    ```
+### `init(options: SakuraOptions<T, U, E>): Promise<void>`
 
-- `lint`: Lint the code using ESLint.
-    ```sh
-    pnpm run lint
-    ```
+Initializes Sakura with the given options. The `options` object should have the following properties:
 
-- `lint:fix`: Lint and fix the code using ESLint.
-    ```sh
-    pnpm run lint:fix
-    ```
+- `elements`: An array of objects specifying the custom elements to define. Each object should have `tagName` and `element` properties.
+- `plugins`: An array of plugins to install.
+- `debug` (optional): A boolean to enable or disable debug mode.
 
-- `test`: Run tests using Vitest.
-    ```sh
-    pnpm run test
-    ```
+### `debugMode(): boolean`
 
-## Project Structure
+Returns the current debug mode status.
 
-- `src/`: Source code directory.
-- `tests/`: Test files directory.
-- `dist/`: Distribution directory (generated after build).
+## Tests
+
+Sakura has a suite of tests that can be run using Vitest. To run the tests, use the following command:
+
+```bash
+npm run test
+```
 
 ## License
 
-This project is licensed under the MIT License.
+Sakura is licensed under the MIT license.
