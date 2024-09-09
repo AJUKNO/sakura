@@ -29,13 +29,13 @@ export default class Sakura<
     this.pubsub = options.pubsub;
   }
 
-  async init(options: SakuraOptions<T, U, E>): Promise<void> {
+  init(options: SakuraOptions<T, U, E>): void {
     this.setOptions(options);
 
     // Install elements
     if (options.elements?.length) {
       for (const element of options.elements) {
-        await this.elementManager?.defineElement(
+        void this.elementManager?.defineElement(
           element.tagName,
           element.element
         );
