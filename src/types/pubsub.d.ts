@@ -38,7 +38,9 @@ export interface BaseEvent {
  * @param event - The event object of type `T` that is being handled.
  * @returns {void}
  */
-export type EventHandler<T extends BaseEvent> = (event: T) => void;
+export type EventHandler<T extends BaseEvent> = (
+  event: T
+) => void | Promise<void>;
 
 /**
  * Interface for a publish-subscribe system.
@@ -90,7 +92,7 @@ export interface IPubSub<T extends BaseEvent> {
    */
   publish<E extends T['type']>(
     eventType: E,
-    source: string,
+    source?: string,
     payload?: Extract<T, { type: E }>['payload']
   ): void;
 
@@ -104,6 +106,20 @@ export interface IPubSub<T extends BaseEvent> {
    * @returns {void}
    */
   subscribeAll<E extends T['type']>(
+    eventTypes: E[],
+    handler: EventHandler<Extract<T, { type: E }>>
+  ): void;
+
+  /**
+   * Unsubscribes from multiple event types, removing the handler function.
+   *
+   * The handler will no longer be invoked when any of the specified event types are published.
+   *
+   * @param eventTypes - An array of event types to unsubscribe from.
+   * @param handler - The handler function to remove.
+   * @returns {void}
+   */
+  unsubscribeAll<E extends T['type']>(
     eventTypes: E[],
     handler: EventHandler<Extract<T, { type: E }>>
   ): void;

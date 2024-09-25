@@ -12,8 +12,19 @@
  *
  * @module
  */
+import { ISakura } from '@/types/sakura';
+import { ElementProvider } from './managers';
+import { PluginProvider } from '@/types/plugin-manager';
+import { BaseEvent } from './pubsub';
+
 export * from './sakura';
-export * from './element-manager';
+export * from './managers';
 export * from './plugin-manager';
 export * from './logger';
 export * from './pubsub';
+
+declare global {
+  interface Window {
+    sakura: ISakura<ElementProvider, PluginProvider, BaseEvent>;
+  }
+}

@@ -1,3 +1,6 @@
+interface Installer<T> {
+  install(items: T[]): void;
+}
 /**
  * Interface for managing a collection of elements identified by tags.
  *
