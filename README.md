@@ -1,129 +1,78 @@
 <p align="center">
-  <img src="./.github/assets/sakura-banner.png" alt="Mite banner">
+  <img src="./.github/assets/sakura-banner.png" alt="Sakura banner">
 </p>
 
 <p align="center">
-Sakura is a TypeScript-based project designed to facilitate the development of custom components that extend HTMLElements. It provides a robust and flexible structure for creating and managing custom elements in your application.
+  Sakura is a flexible framework for managing custom elements and plugins. It is built with TypeScript and provides a robust API for element and plugin management.
+</p>
+
+<p align="center">
+<a href="https://www.npmjs.com/package/@ajukno/sakura"><img src="https://img.shields.io/npm/v/%40ajukno%2Fsakura?labelColor=%23C75B7A&color=3D3B40" alt="NPM Version"></a>
 </p>
 
 ## Features
 
-- TypeScript written components
-- Custom components extending HTMLElements
-- Debugging and logging capabilities
-- PubSub utility for event management
-- Customizable ASCII art and greetings
+- Manages custom elements and plugins
+- Provides a flexible API for initialization and event handling
+- Supports asynchronous operations
 
 ## Usage
 
-Here is a basic example of how to use Sakura:
+First, import Sakura into your project:
 
 ```typescript
-import { Sakura } from 'sakura';
-
-const sakura = new Sakura({
-  debug: true,
-  kawaii: {
-    art: 'cinnamoroll',
-    greeting: 'Hello, Sakura!'
-  },
-  prefix: 'sakura'
-});
-
-sakura.define([
-  {
-    tagName: 'my-element',
-    elementClass: MyElement
-  }
-]);
+import { sakura } from '@ajukno/sakura';
 ```
 
-In the above example, a new instance of Sakura is created with debugging enabled, a custom ASCII art and greeting, and a prefix for the logger. Then, a custom element is defined.
+Then, initialize Sakura with the options you want to use:
+
+```typescript
+await sakura.init({
+  elements: [
+    { tagName: 'custom-element', element: CustomElementClass },
+  ],
+  plugins: [
+    CustomPlugin,
+  ],
+  debug: true,
+});
+```
+
+You can add custom elements and plugins using the `init` method:
+
+```typescript
+await sakura.init({
+  elements: [
+    { tagName: 'another-element', element: AnotherElementClass },
+  ],
+  plugins: [
+    AnotherPlugin,
+  ],
+});
+```
 
 ## API
 
-### Sakura
+### `init(options: SakuraOptions<T, U, E>): Promise<void>`
 
-The `Sakura` class is the main export of the Sakura module. It provides methods for defining and managing custom elements, as well as utilities for logging and event management.
+Initializes Sakura with the given options. The `options` object should have the following properties:
 
-#### `constructor(options: ISakuraOptions)`
+- `elements`: An array of objects specifying the custom elements to define. Each object should have `tagName` and `element` properties.
+- `plugins`: An array of plugins to install.
+- `debug` (optional): A boolean to enable or disable debug mode.
 
-Creates a new instance of Sakura. The options parameter allows you to customize the behavior of Sakura.
+### `debugMode(): boolean`
 
-#### `init(options: ISakuraOptions): void`
+Returns the current debug mode status.
 
-Initializes Sakura with the provided options.
+## Tests
 
-#### `define(elements: ICustomElement[]): void`
+Sakura has a suite of tests that can be run using Vitest. To run the tests, use the following command:
 
-Defines custom elements. The elements parameter is an array of objects, each containing a tagName and an elementClass.
-
-#### `reset(): void`
-
-Resets the custom elements registry, redefining all previously defined elements.
-
-#### `kawaii(art: SakuraArt, greeting?: string): void`
-
-Displays ASCII art and an optional greeting in the console.
-
-## Contributing
-
-Contributions are welcome! Please check the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
+```bash
+npm run test
+```
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-# Shopify Foundation
-
-Shopify Foundation is a starter template designed to facilitate the development of Shopify themes using TypeScript written components. These components extend HTMLElements to create custom components in the Liquid space, enabling seamless interaction between different parts of your Shopify theme.
-
-## Features
-
-- TypeScript written components
-- Custom components extending HTMLElements
-- Facilitates interaction between Liquid components
-
-## Roadmap
-
-| Sections             | Main | Snippets           | Scripts            | Schema |
-| -------------------- | ---- | ------------------ | ------------------ | ------ |
-| **article**          | ✓    | ✓                  | ✓                  | ✓      |
-| blog                 | ✓    | ✓                  | ✓                  | ✓      |
-| cart                 | ✓    | ✓                  | ✓                  | ✓      |
-| collection           | ✓    | ✓                  | ✓                  | ✓      |
-| **gift_card.liquid** | ✓    | ✓                  | ✓                  | ✓      |
-| **index**            | ✗    | ✗                  | ✗                  | ✗      |
-| **list-collections** | ✗    | ✗                  | ✗                  | ✗      |
-| page                 | ✓    | <small>N/A</small> | <small>N/A</small> | ✓      |
-| **password**         | ✓    | ✓                  | ✓                  | ✓      |
-| product              | ✗    | ✓                  | ✓                  | ✓      |
-| search               | ✓    | ✓                  | ✓                  | ✓      |
-| 404                  | ✓    | <small>N/A</small> | <small>N/A</small> | ✓      |
-
-### Out of scope
-
-| Sections                   | Snippets | Scripts | Schema |
-| -------------------------- | -------- | ------- | ------ |
-| customers/account          | ✗        | ✗       | ✗      |
-| customers/activate_account | ✗        | ✗       | ✗      |
-| customers/addresses        | ✗        | ✗       | ✗      |
-| customers/login            | ✗        | ✗       | ✗      |
-| customers/order            | ✗        | ✗       | ✗      |
-| customers/register         | ✗        | ✗       | ✗      |
-| customers/reset_password   | ✗        | ✗       | ✗      |
-| robots.txt.liquid          | ✗        | ✗       | ✗      |
-
-## Getting Started
-
-1. Clone this repository.
-2. Install dependencies: `npm install`
-3. Start the development server: `npm start`
-
-## Contributing
-
-Contributions are welcome! Please check the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+Sakura is licensed under the MIT license.

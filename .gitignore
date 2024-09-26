@@ -1,11 +1,6 @@
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 node_modules
-_dist/*
-.hanabi
-old
+.DS_Store
+dist
+*.log
+.idea
+coverage
