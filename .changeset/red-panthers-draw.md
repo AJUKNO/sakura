@@ -1,0 +1,5 @@
+---
+'@ajukno/sakura': minor
+---
+
+rewrite
