@@ -1,5 +1,11 @@
 # @ajukno/ts-starter
 
+## 0.1.1
+
+### Patch Changes
+
+- 5e210c2: updated dependencies
+
 ## 0.1.0
 
 ### Minor Changes
